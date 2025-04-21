@@ -1,0 +1,25 @@
+from django.urls import path
+from .views import ProductList, ProductDetail, ProductCreate, ProductUpdate, ProductDelete, ShopList, ShopDelete, \
+    ShopCreate, ShopUpdate, ShopDetail, CategoryList, CategoryDetail, CategoryCreate, CategoryUpdate, CategoryDelete,\
+    WishlistList,WishlistCreate,WishlistDelete
+
+urlpatterns = [
+    path('product', ProductList.as_view()),
+    path('product/<int:pk>', ProductDetail.as_view()),
+    path('product/create', ProductCreate.as_view()),
+    path('product/update/<int:pk>', ProductUpdate.as_view()),
+    path('product/delete/<int:pk>', ProductDelete.as_view()),
+    path('shop', ShopList.as_view()),
+    path('shop/<int:pk>', ShopDetail.as_view()),
+    path('shop/create', ShopCreate.as_view()),
+    path('shop/update/<int:pk>', ShopUpdate.as_view()),
+    path('shop/delete/<int:pk>', ShopDelete.as_view()),
+    path('category', CategoryList.as_view()),
+    path('category/<int:pk>', CategoryDetail.as_view()),
+    path('category/create', CategoryCreate.as_view()),
+    path('category/update/<int:pk>', CategoryUpdate.as_view()),
+    path('category/delete/<int:pk>', CategoryDelete.as_view()),
+    path('wishlist', WishlistList.as_view()),
+    path('wishlist/create', WishlistCreate.as_view()),
+    path('wishlist/delete/<int:pk>', WishlistDelete.as_view()),
+]

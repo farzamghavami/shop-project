@@ -13,4 +13,5 @@ class RateSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['id', 'user', 'product', 'text', 'parent']
+        fields = ['id', 'product','user', 'text', 'parent']
+        extra_kwargs = {'user': {'read_only': True}}

@@ -112,7 +112,6 @@ class ShopCreate(APIView):
     serializer_class = ShopSerializer
     def post(self, request):
         current_user = get_current_user_from_token(request)
-        print(current_user)
         self.check_object_permissions(request, request)
         srz_data = ShopSerializer(data=request.data)
         if srz_data.is_valid():

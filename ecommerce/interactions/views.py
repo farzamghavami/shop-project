@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from .models import Comment, Rate
 from .serializers import CommentSerializer, RateSerializer
 from core.permissions import IsSellerOrAdmin,IsOwnerOrAdmin
+from accounts.views import get_current_user_from_token
 
 class CommentCreateView(APIView):
     """
@@ -14,9 +15,10 @@ class CommentCreateView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CommentSerializer
     def post(self, request):
+        current_user = get_current_user_from_token(request)
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            serializer.save(user=current_user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -93,8 +95,9 @@ class RatingCreateView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = RateSerializer
     def post(self, request, pk):
+        current_user = get_current_user_from_token(request)
         srz_data = RateSerializer(data=request.data)
         if srz_data.is_valid():
-            srz_data.save()
+            srz_data.save(user=current_user)
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)

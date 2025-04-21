@@ -9,12 +9,16 @@ from django.conf import settings
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from core.permissions import IsOwnerOrAdmin,IsSellerOrAdmin
+
+
+
 class UserList(APIView):
     """
     user list
     """
     permission_classes = [IsAdminUser]
     serializer_class = UserSerializer
+
     def get(self,request):
         queryset = User.objects.all()
         srz_data = UserSerializer(queryset, many=True)
@@ -24,13 +28,14 @@ class UserDetail(APIView):
     """
     account detail
     """
-    permission_classes = [IsAuthenticated,IsOwnerOrAdmin]
+    permission_classes = [IsOwnerOrAdmin]
     serializer_class = UserSerializer
-    def get(self,request,pk):
-        queryset = User.objects.filter(id=pk)
-        srz_data = UserSerializer(queryset, many=True)
-        return Response(srz_data.data)
 
+    def get(self,request,pk):
+        user = get_object_or_404(User,pk=pk)
+        self.check_object_permissions(request,user)
+        srz_data = UserSerializer(user)
+        return Response(srz_data.data,status=status.HTTP_200_OK)
 
 
 class UserCreate(APIView):
@@ -49,7 +54,7 @@ class UserUpdate(APIView):
     """
     update a user
     """
-    permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
+    permission_classes = [IsOwnerOrAdmin]
     serializer_class = UserSerializer
     def put(self, request, pk):
         queryset = get_object_or_404(User, id=pk)
@@ -65,7 +70,7 @@ class UserDelete(APIView):
     """
     user delete
     """
-    permission_classes = [IsAuthenticated,IsOwnerOrAdmin]
+    permission_classes = [IsOwnerOrAdmin]
     serializer_class = UserSerializer
     def delete(self, request, pk):
         user = get_object_or_404(User, pk=pk)
@@ -79,7 +84,7 @@ class AddressList(APIView):
     """
     address list
     """
-    permission_classes = [IsAuthenticated,IsAdminUser]
+    permission_classes = [IsAdminUser]
     serializer_class = AddressSerializer
     def get(self,request):
         queryset = Address.objects.all()
@@ -89,7 +94,7 @@ class AddressList(APIView):
 
 class AddressDetail(APIView):
     """address detail"""
-    permission_classes = [IsAuthenticated,IsOwnerOrAdmin]
+    permission_classes = [IsOwnerOrAdmin]
     serializer_class = AddressSerializer
     def get(self,request,pk):
         queryset = Address.objects.get(id=pk)
@@ -104,7 +109,7 @@ class AddressCreate(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = AddressSerializer
     def post(self,request):
-        current_user = get_current_user_from_token()
+        current_user = get_current_user_from_token(request)
         srz_data = AddressSerializer(data=request.data)
         if srz_data.is_valid():
             srz_data.save(user=current_user)
@@ -131,7 +136,7 @@ class AddressDelete(APIView):
     """
     address delete
     """
-    permission_classes = [IsAuthenticated,IsOwnerOrAdmin]
+    permission_classes = [IsOwnerOrAdmin]
     serializer_class = AddressSerializer
     def delete(self,request,pk):
         address = get_object_or_404(Address, id=pk)

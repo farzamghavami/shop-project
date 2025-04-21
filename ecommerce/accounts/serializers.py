@@ -1,5 +1,6 @@
 from importlib.metadata import requires
 
+from django.db.models.fields.json import CaseInsensitiveMixin
 from rest_framework import serializers
 from .models import User, Address, Country, City
 
@@ -33,4 +34,5 @@ class AddressSerializer(serializers.ModelSerializer):
     city = serializers.PrimaryKeyRelatedField(queryset=City.objects.all())
     class Meta:
         model = Address
-        fields = ['id', 'user', 'city', 'street', 'zip_code','is_active']
+        fields = ['id', 'city','user', 'street', 'zip_code','is_active']
+        extra_kwargs = {'user': {'read_only': True}}

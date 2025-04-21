@@ -41,9 +41,7 @@ class ProductCreate(APIView):
         current_user = get_current_user_from_token(request)
         print(srz_data)
         if srz_data.is_valid():
-            print(request.data['shop'])
-
-            srz_data.save()
+            srz_data.save(user=current_user)
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -184,9 +182,10 @@ class CategoryCreate(APIView):
     permission_classes = [IsSellerOrAdmin]
     serializer_class = CategorySerializer
     def post(self, request):
+        current_user = get_current_user_from_token(request)
         srz_data = CategorySerializer(data=request.data)
         if srz_data.is_valid():
-            srz_data.save()
+            srz_data.save(user=current_user)
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -239,9 +238,11 @@ class WishlistCreate(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = WishListSerializer
     def post(self, request):
+        current_user = get_current_user_from_token(request)
         queryset = WishListSerializer(data=request.data)
         self.check_object_permissions(request, queryset)
         if queryset.is_valid():
+            queryset.save(user=current_user)
             return Response(queryset.data, status=status.HTTP_201_CREATED)
         return Response(queryset.errors, status=status.HTTP_400_BAD_REQUEST)
 

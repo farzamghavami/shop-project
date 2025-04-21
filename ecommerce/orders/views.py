@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
-
+from accounts.views import get_current_user_from_token
 from .models import Order,OrderItem,Delivery
 from .serializers import OrderSerializer, OrderItem, DeliverySerializer, OrderItemSerializer
 from core.permissions import IsOwnerOrAdmin,IsSellerOrAdmin
@@ -40,10 +40,11 @@ class Ordercreate(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = OrderSerializer
     def post(self,request):
+        currentUser = get_current_user_from_token(request)
         serializers = OrderSerializer(data=request.data)
         self.check_object_permissions(request,serializers)
         if serializers.is_valid():
-            serializers.save()
+            serializers.save(user=currentUser)
             return Response(serializers.data, status=status.HTTP_201_CREATED)
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -107,9 +108,10 @@ class OrderItemCreate(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = OrderItemSerializer
     def post(self,request):
+        current_user = get_current_user_from_token(request)
         srz_data = OrderItemSerializer(data=request.data)
         if srz_data.is_valid():
-            srz_data.save()
+            srz_data.save(user=current_user)
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 

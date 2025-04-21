@@ -104,9 +104,10 @@ class AddressCreate(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = AddressSerializer
     def post(self,request):
+        current_user = get_current_user_from_token()
         srz_data = AddressSerializer(data=request.data)
         if srz_data.is_valid():
-            srz_data.save()
+            srz_data.save(user=current_user)
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
         print(srz_data.errors)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)

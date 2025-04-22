@@ -6,7 +6,6 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name','parent']
-        extra_kwargs = {'parent': {'required': False}}
 
 
 class ShopSerializer(serializers.ModelSerializer):

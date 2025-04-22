@@ -6,6 +6,7 @@ from accounts.models import Address, User
 class Category(models.Model):
     name = models.CharField(max_length=100)
     parent = models.ForeignKey('self',null=True,blank=True,on_delete=models.CASCADE,related_name='children')
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='categories')
 
     def __str__(self):
         full_path = [self.name]

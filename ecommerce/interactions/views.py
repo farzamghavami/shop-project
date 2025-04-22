@@ -94,7 +94,7 @@ class RatingCreateView(APIView):
     """
     permission_classes = [IsAuthenticated]
     serializer_class = RateSerializer
-    def post(self, request, pk):
+    def post(self, request):
         current_user = get_current_user_from_token(request)
         srz_data = RateSerializer(data=request.data)
         if srz_data.is_valid():

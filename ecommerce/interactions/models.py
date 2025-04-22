@@ -5,7 +5,7 @@ from catalog.models import Product
 class Rate(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    score = models.FloatField(default=0)
+    score = models.IntegerField()
 
     class Meta:
         unique_together = ('user', 'product')  # هر کاربر یک بار به هر محصول امتیاز می‌ده

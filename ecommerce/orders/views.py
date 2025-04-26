@@ -10,7 +10,7 @@ from .serializers import OrderSerializer, OrderItem, DeliverySerializer, OrderIt
 from core.permissions import IsOwnerOrAdmin,IsSellerOrAdmin
 
 
-class Orderlist(APIView):
+class OrderList(APIView):
     """
     list all orders
     """
@@ -21,7 +21,7 @@ class Orderlist(APIView):
         serializers = OrderSerializer(queryset,many=True)
         return Response(serializers.data)
 
-class Orderdetail(APIView):
+class OrderDetail(APIView):
     """
     detail one order
     """
@@ -33,7 +33,7 @@ class Orderdetail(APIView):
         serializer = OrderSerializer(order)  # بدون many=True
         return Response(serializer.data)
 
-class Ordercreate(APIView):
+class OrderCreate(APIView):
     """
     create a new order
     """
@@ -48,7 +48,7 @@ class Ordercreate(APIView):
             return Response(serializers.data, status=status.HTTP_201_CREATED)
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class Orderupdate(APIView):
+class OrderUpdate(APIView):
     """
     update an order
     """
@@ -77,7 +77,7 @@ class OrderDelete(APIView):
         srz_data = OrderSerializer(object)
         return Response(srz_data.data, status=status.HTTP_204_NO_CONTENT)
 
-class OrderItemlist(APIView):
+class OrderItemList(APIView):
     """
     list all order items
     """
@@ -89,7 +89,7 @@ class OrderItemlist(APIView):
         srz_data = OrderItemSerializer(queryset, many=True)
         return Response(srz_data.data)
 
-class OrderItemdetail(APIView):
+class OrderItemDetail(APIView):
     """
     detail one order item
     """
@@ -101,19 +101,6 @@ class OrderItemdetail(APIView):
         serializers = OrderItemSerializer(orderitem)
         return Response(serializers.data)
 
-class OrderItemCreate(APIView):
-    """
-    create a new order item
-    """
-    permission_classes = [IsAuthenticated]
-    serializer_class = OrderItemSerializer
-    def post(self,request):
-        current_user = get_current_user_from_token(request)
-        srz_data = OrderItemSerializer(data=request.data)
-        if srz_data.is_valid():
-            srz_data.save(user=current_user)
-            return Response(srz_data.data, status=status.HTTP_201_CREATED)
-        return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class OrderItemupdate(APIView):
     """

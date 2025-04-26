@@ -14,6 +14,7 @@ class ProductList(APIView):
     list all products
     """
     serializer_class = ProductSerializer
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         queryset = Product.objects.all()
         srz_data = ProductSerializer(queryset, many=True)
@@ -25,6 +26,7 @@ class ProductDetail(APIView):
     detail single product
     """
     serializer_class = ProductSerializer
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk):
         queryset = Product.objects.get(pk=pk)
         srz_data = ProductSerializer(queryset)
@@ -179,7 +181,7 @@ class CategoryCreate(APIView):
     """
     create new category
     """
-    permission_classes = [IsSellerOrAdmin]
+    permission_classes = [IsAdminUser]
     serializer_class = CategorySerializer
     def post(self, request):
         current_user = get_current_user_from_token(request)

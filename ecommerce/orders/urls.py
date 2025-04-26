@@ -1,16 +1,15 @@
 from django.urls import path
-from .views import Orderlist, Orderdetail, Ordercreate, Orderupdate, OrderDelete, OrderItemlist, OrderItemdetail, \
-    OrderItemupdate, OrderItemDelete, OrderItemCreate, DeliveryCreate, DeliveryDelete, DeliveryList,DeliveryDetail
+from .views import OrderList, OrderDetail, OrderCreate, OrderUpdate, OrderDelete, OrderItemList, OrderItemDetail, \
+    OrderItemupdate, OrderItemDelete, DeliveryCreate, DeliveryDelete, DeliveryList,DeliveryDetail
 
 urlpatterns = [
-    path('order', Orderlist.as_view()),
-    path('order/<int:pk>', Orderdetail.as_view()),
-    path('order/create', Ordercreate.as_view()),
-    path('order/update/<int:pk>', Orderupdate.as_view()),
+    path('order', OrderList.as_view()),
+    path('order/<int:pk>', OrderDetail.as_view()),
+    path('order/create', OrderCreate.as_view()),
+    path('order/update/<int:pk>', OrderUpdate.as_view()),
     path('order/delete/<int:pk>', OrderDelete.as_view()),
-    path('orderitem', OrderItemlist.as_view()),
-    path('orderitem/<int:pk>', OrderItemdetail.as_view()),
-    path('orderitem/create', OrderItemCreate.as_view()),
+    path('orderitem', OrderItemList.as_view()),
+    path('orderitem/<int:pk>', OrderItemDetail.as_view()),
     path('orderitem/update/<int:pk>', OrderItemupdate.as_view()),
     path('orderitem/delete/<int:pk>', OrderItemDelete.as_view()),
     path('delivery', DeliveryList.as_view()),

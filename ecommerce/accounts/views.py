@@ -121,7 +121,7 @@ class AddressUpdate(APIView):
     """
     update a address
     """
-    permission_classes = [IsAuthenticated,IsOwnerOrAdmin]
+    permission_classes = [IsOwnerOrAdmin]
     serializer_class = AddressSerializer
     def put(self,request,pk):
         queryset =Address.objects.get(id=pk)

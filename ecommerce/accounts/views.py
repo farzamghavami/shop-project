@@ -96,10 +96,10 @@ class AddressDetail(APIView):
     """address detail"""
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = AddressSerializer
-    def get(self,request,pk):
-        queryset = Address.objects.get(id=pk)
-        self.check_object_permissions(request, queryset)
-        srz_data = AddressSerializer(queryset)
+    def get(self, request, pk):
+        address = get_object_or_404(Address, pk=pk)
+        self.check_object_permissions(request, address)
+        srz_data = AddressSerializer(address)
         return Response(srz_data.data)
 
 class AddressCreate(APIView):

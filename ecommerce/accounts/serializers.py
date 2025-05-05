@@ -17,6 +17,10 @@ class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
         fields = ['id', 'name', 'country']
+        def to_representation(self, instance):
+            rep = super().to_representation(instance)
+            rep['country'] = CountrySerializer(instance.country).data
+            return rep
 
 
 class UserSerializer(serializers.ModelSerializer):

@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from accounts.serializers import UserSerializer
 from .models import Product, Category, Shop, Wishlist
 
 
@@ -9,10 +11,16 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ShopSerializer(serializers.ModelSerializer):
+    owner = serializers.SerializerMethodField()
     class Meta:
         model = Shop
         fields = ['id', 'name', 'owner','address','status','is_active']
         extra_kwargs = {"owner": {"read_only": True}}
+
+    def get_owner(self, obj):
+        return {
+            "id": obj.owner.id,
+            "name": obj.owner.username,}
 
 
 class ProductSerializer(serializers.ModelSerializer):

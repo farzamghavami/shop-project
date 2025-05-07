@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  web:
+    image: python:3.10
+    container_name: django_web
+    working_dir: /app
+    command: bash -c "pip install django mysqlclient && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./ecommerce:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_NAME=mydb
+      - DB_USER=root
+      - DB_PASSWORD=secret
+    networks:
+      - internal
+
+  db:
+    image: mysql:8
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: mydb
+      MYSQL_ROOT_PASSWORD: secret
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - internal
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: secret
+    depends_on:
+      - db
+    networks:
+      - internal
+
+networks:
+  internal:
+
+volumes:
+  db_data:

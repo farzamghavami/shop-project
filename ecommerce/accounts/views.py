@@ -19,7 +19,7 @@ class UserList(APIView):
     serializer_class = UserSerializer
 
     def get(self,request):
-        queryset = User.objects.all()
+        queryset = User.objects.filter(is_active=True)
         srz_data = UserSerializer(queryset, many=True)
         return Response(srz_data.data)
 

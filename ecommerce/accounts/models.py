@@ -1,5 +1,4 @@
-from importlib.metadata import requires
-from typing import Required
+
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -11,6 +10,7 @@ class User(AbstractUser):
         ('USER', 'User'),
     )
     phone = models.CharField(max_length=36, unique=True)
+    gender = models.CharField(max_length=1,default='M')
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='USER')
     is_active = models.BooleanField(default=True)

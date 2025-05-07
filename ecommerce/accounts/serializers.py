@@ -42,3 +42,4 @@ class AddressSerializer(serializers.ModelSerializer):
         model = Address
         fields = ['id', 'city','user', 'street', 'zip_code','is_active']
         extra_kwargs = {'user': {'read_only': True}}
+

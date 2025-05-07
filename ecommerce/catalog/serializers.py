@@ -17,6 +17,7 @@ class ShopSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'owner','address','status','is_active']
         extra_kwargs = {"owner": {"read_only": True}}
 
+    """this method is for showing items that you want in UserSerializer """
     def get_owner(self, obj):
         return {
             "id": obj.owner.id,

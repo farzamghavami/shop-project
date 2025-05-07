@@ -11,7 +11,6 @@ from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from core.permissions import IsOwnerOrAdmin,IsSellerOrAdmin
 
 
-
 class UserList(APIView):
     """
     user list
@@ -34,7 +33,7 @@ class UserDetail(APIView):
     def get(self,request,pk):
         user = get_object_or_404(User,pk=pk)
         self.check_object_permissions(request,user)
-        srz_data = UserSerializer(user)
+        srz_data = self.serializer_class(user)
         return Response(srz_data.data,status=status.HTTP_200_OK)
 
 
@@ -44,7 +43,7 @@ class UserCreate(APIView):
     """
     serializer_class = UserSerializer
     def post(self,request):
-        srz_data = UserSerializer(data=request.data)
+        srz_data = self.serializer_class(data=request.data)
         if srz_data.is_valid():
             srz_data.save()
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
@@ -170,7 +169,7 @@ class CityList(APIView):
         return Response(srz_data.data)
 
 
-
+"""for getting user ID in """
 
 def get_current_user_from_token(request):
     # استخراج توکن از header

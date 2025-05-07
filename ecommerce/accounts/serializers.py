@@ -17,6 +17,8 @@ class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
         fields = ['id', 'name', 'country']
+
+        """ this code is for showing all of thing in CountrySerializer """
         def to_representation(self, instance):
             rep = super().to_representation(instance)
             rep['country'] = CountrySerializer(instance.country).data

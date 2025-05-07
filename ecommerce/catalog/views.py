@@ -127,12 +127,11 @@ class ShopUpdate(APIView):
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = ShopSerializer
     def put(self, request, pk):
-        current_user = get_current_user_from_token(request)
         queryset = get_object_or_404(Shop, pk=pk)
         self.check_object_permissions(request, queryset)
         srz_data = ShopSerializer(queryset, data=request.data, partial=True)
         if srz_data.is_valid():
-            srz_data.save(owner=current_user)
+            srz_data.save()
             return Response(srz_data.data, status=status.HTTP_200_OK)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -144,8 +143,8 @@ class ShopDelete(APIView):
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = ShopSerializer
     def delete(self, request, pk):
-        current_user = get_current_user_from_token(request)
         shop = get_object_or_404(Shop, pk=pk)
+        self.check_object_permissions(request, shop)
         shop.is_active = False
         shop.save()
         serializer = ShopSerializer(shop)

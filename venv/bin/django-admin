@@ -1,4 +1,4 @@
-#!/home/farzam/ecommerce/venv/bin/python3
+#!/home/farzam/ecommerce/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

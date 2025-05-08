@@ -9,6 +9,7 @@ from django.conf import settings
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from core.permissions import IsOwnerOrAdmin,IsSellerOrAdmin
+from drf_yasg.utils import swagger_auto_schema
 
 
 class UserList(APIView):
@@ -19,7 +20,7 @@ class UserList(APIView):
     serializer_class = UserSerializer
 
     def get(self,request):
-        queryset = User.objects.filter(is_active=True)
+        queryset = User.objects.all()
         srz_data = UserSerializer(queryset, many=True)
         return Response(srz_data.data)
 
@@ -42,6 +43,8 @@ class UserCreate(APIView):
     create a new user
     """
     serializer_class = UserSerializer
+
+    @swagger_auto_schema(request_body=UserSerializer)
     def post(self,request):
         srz_data = self.serializer_class(data=request.data)
         if srz_data.is_valid():

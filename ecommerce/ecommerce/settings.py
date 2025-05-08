@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'core',
     'drf_spectacular',
     'django_filters',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -87,16 +88,11 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mydb',
         'USER': 'root',
-        'PASSWORD': 'secret',
-        'HOST': 'db',  # in name service mysql dar docker-compose ast
+        'PASSWORD': '1111',
+        'HOST': '127.0.0.1',  # in name service mysql dar docker-compose ast
         'PORT': '3306',
     }
 }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',

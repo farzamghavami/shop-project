@@ -1,8 +1,9 @@
-from importlib.metadata import requires
-
 from django.db.models.fields.json import CaseInsensitiveMixin
+from jsonschema import ValidationError
 from rest_framework import serializers
 from .models import User, Address, Country, City
+from django.contrib.auth.password_validation import validate_password
+from django.core import exceptions
 
 
 class CountrySerializer(serializers.ModelSerializer):
@@ -27,13 +28,27 @@ class CitySerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
+        password1 = serializers.CharField(max_length=255, write_only=True)
         model = User
-        fields = ['id', 'username', 'email', 'phone', 'role','password',]
+        fields = ['id', 'username', 'email', 'phone', 'role','password','password1']
         extra_kwargs = {'password': {'write_only': True},'role': {'read_only': True}}
+
+    def validate(self, attrs):
+        if attrs.get('password') != attrs.get('password1'):
+            raise serializers.ValidationError('Passwords must match')
+
+        try:
+            validate_password(attrs.get('password'))
+        except exceptions.ValidationError as e:
+            raise serializers.ValidationError({'password': list(e.messages)})
+
+
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
+
+
 
 
 class AddressSerializer(serializers.ModelSerializer):
@@ -43,3 +58,26 @@ class AddressSerializer(serializers.ModelSerializer):
         fields = ['id', 'city','user', 'street', 'zip_code','is_active']
         extra_kwargs = {'user': {'read_only': True}}
 
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+    new_password1 = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+        if attrs['new_password'] != attrs['new_password1']:
+            raise serializers.ValidationError("رمز جدید و تکرار آن یکسان نیستند.")
+
+        validate_password(attrs['new_password'])
+
+        user = self.context['request'].user
+        if not user.check_password(attrs['old_password']):
+            raise serializers.ValidationError("رمز فعلی اشتباه است.")
+
+        return attrs
+
+    def save(self, **kwargs):
+        user = self.context['request'].user
+        user.set_password(self.validated_data['new_password'])
+        user.save()
+        return user

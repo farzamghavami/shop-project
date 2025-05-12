@@ -16,7 +16,7 @@ class CommentCreateView(APIView):
     serializer_class = CommentSerializer
     def post(self, request):
         current_user = get_current_user_from_token(request)
-        serializer = CommentSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save(user=current_user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -32,7 +32,7 @@ class CommentListView(APIView):
 
     def get(self, request):
         comments = Comment.objects.all()
-        serializer = CommentSerializer(comments, many=True)
+        serializer = self.serializer_class(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class CommentDetailView(APIView):
@@ -44,7 +44,7 @@ class CommentDetailView(APIView):
 
     def get(self, request, pk):
         comment = get_object_or_404(parent=None, pk=pk)
-        serializer = CommentSerializer(comment)
+        serializer = self.serializer_class(comment)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class CommentUpdateView(APIView):
@@ -55,9 +55,9 @@ class CommentUpdateView(APIView):
     serializer_class = CommentSerializer
 
     def put(self, request, pk):
-        comment = get_object_or_404(parent=None, pk=pk)
+        comment = get_object_or_404(Comment, pk=pk, parent=None)
         self.check_object_permissions(comment, request.user)
-        serializer = CommentSerializer(comment, data=request.data)
+        serializer = self.serializer_class(comment, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -70,7 +70,7 @@ class CommentDeleteView(APIView):
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = CommentSerializer
     def delete(self, request, pk):
-        comment = get_object_or_404(parent=None, pk=pk)
+        comment = get_object_or_404(Comment, pk=pk)
         self.check_object_permissions(comment, request.user)
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -84,8 +84,8 @@ class RatingDetailView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = RateSerializer
     def get(self, request, pk):
-        comment = get_object_or_404(parent=None, pk=pk)
-        serializer = RateSerializer(comment)
+        comment = get_object_or_404(Comment, parent=None, pk=pk)
+        serializer = self.serializer_class(comment)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class RatingCreateView(APIView):
@@ -96,7 +96,7 @@ class RatingCreateView(APIView):
     serializer_class = RateSerializer
     def post(self, request):
         current_user = get_current_user_from_token(request)
-        srz_data = RateSerializer(data=request.data)
+        srz_data = self.serializer_class(data=request.data)
         if srz_data.is_valid():
             srz_data.save(user=current_user)
             return Response(srz_data.data, status=status.HTTP_201_CREATED)

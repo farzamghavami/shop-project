@@ -1,6 +1,6 @@
 from django.urls import  path
 from .views import UserList, UserCreate, UserDelete, UserUpdate, AddressDetail, AddressCreate, AddressUpdate, \
-    AddressDelete, UserDetail,AddressList,CityList,CountryList
+    AddressDelete, UserDetail,AddressList,CityList,CountryList,ChangePasswordView
 
 from rest_framework_simplejwt.views import (TokenObtainPairView,TokenRefreshView)
 
@@ -8,6 +8,7 @@ urlpatterns = [
     path('users', UserList.as_view()),
     path('user/<int:pk>', UserDetail.as_view()),
     path('register', UserCreate.as_view()),
+    path('change-password', ChangePasswordView.as_view()),
     path('user/delete/<int:pk>', UserDelete.as_view()),
     path('user/update/<int:pk>', UserUpdate.as_view()),
     path('address/<int:pk>',AddressDetail.as_view()),

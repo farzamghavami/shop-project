@@ -7,19 +7,16 @@ from .models import Category, Product, Shop, Wishlist
 from .serializers import CategorySerializer, ProductSerializer, ShopSerializer, WishListSerializer
 from accounts.views import get_current_user_from_token
 from core.permissions import *
+from rest_framework.generics import ListAPIView
 
 
-class ProductList(APIView):
+class ProductList(ListAPIView):
     """
     list all products
     """
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated]
-    def get(self, request):
-        queryset = Product.objects.all()
-        srz_data = ProductSerializer(queryset, many=True)
-        return Response(srz_data.data)
-
+    queryset = Product.objects.all()
 
 class ProductDetail(APIView):
     """
@@ -28,8 +25,8 @@ class ProductDetail(APIView):
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated]
     def get(self, request, pk):
-        queryset = Product.objects.get(pk=pk)
-        srz_data = ProductSerializer(queryset)
+        queryset = get_object_or_404(Product, pk=pk)
+        srz_data = self.serializer_class(queryset)
         return Response(srz_data.data)
 
 class ProductCreate(APIView):
@@ -39,9 +36,8 @@ class ProductCreate(APIView):
     permission_classes = [IsSellerOrAdmin]
     serializer_class = ProductSerializer
     def post(self, request):
-        srz_data = ProductSerializer(data=request.data)
+        srz_data = self.serializer_class(data=request.data)
         current_user = get_current_user_from_token(request)
-        print(srz_data)
         if srz_data.is_valid():
             srz_data.save(user=current_user)
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
@@ -54,12 +50,11 @@ class ProductUpdate(APIView):
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = ProductSerializer
     def put(self, request, pk):
-        queryset = Product.objects.get(pk=pk)
+        queryset = get_object_or_404(Product, pk=pk)
         self.check_object_permissions(request, queryset)
-        current_user = get_current_user_from_token(request)
-        srz_data = ProductSerializer(queryset, data=request.data, partial=True)
+        srz_data = self.serializer_class(queryset, data=request.data, partial=True)
         if srz_data.is_valid():
-            srz_data.save(owner=current_user)
+            srz_data.save()
             return Response(srz_data.data, status=status.HTTP_200_OK)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -75,20 +70,18 @@ class ProductDelete(APIView):
         self.check_object_permissions(request, product)
         product.is_active = False
         product.save()
-        serializer = ProductSerializer(product)
+        serializer = self.serializer_class(product)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class ShopList(APIView):
+class ShopList(ListAPIView):
     """
-    list all shops
+    List all shops
     """
-    permission_classes = [IsAuthenticated]
     serializer_class = ShopSerializer
-    def get(self, request):
-        queryset = Shop.objects.all()
-        srz_data = ShopSerializer(queryset, many=True)
-        return Response(srz_data.data)
+    permission_classes = [IsAuthenticated]
+    queryset = Shop.objects.all()
+
 
 
 class ShopDetail(APIView):
@@ -100,7 +93,7 @@ class ShopDetail(APIView):
     def get(self, request, pk):
         shop = get_object_or_404(Shop, pk=pk)
         self.check_object_permissions(request, shop)
-        srz_data = ShopSerializer(shop)
+        srz_data = self.serializer_class(shop)
         return Response(srz_data.data)
 
 
@@ -113,9 +106,9 @@ class ShopCreate(APIView):
     def post(self, request):
         current_user = get_current_user_from_token(request)
         self.check_object_permissions(request, request)
-        srz_data = ShopSerializer(data=request.data)
+        srz_data = self.serializer_class(data=request.data)
         if srz_data.is_valid():
-            srz_data.save(owner=current_user)  # 👈 اینجا owner رو ست می‌کنی
+            srz_data.save(owner=current_user)
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -129,7 +122,7 @@ class ShopUpdate(APIView):
     def put(self, request, pk):
         queryset = get_object_or_404(Shop, pk=pk)
         self.check_object_permissions(request, queryset)
-        srz_data = ShopSerializer(queryset, data=request.data, partial=True)
+        srz_data = self.serializer_class(queryset, data=request.data, partial=True)
         if srz_data.is_valid():
             srz_data.save()
             return Response(srz_data.data, status=status.HTTP_200_OK)
@@ -147,7 +140,7 @@ class ShopDelete(APIView):
         self.check_object_permissions(request, shop)
         shop.is_active = False
         shop.save()
-        serializer = ShopSerializer(shop)
+        serializer = self.serializer_class(shop)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -172,7 +165,7 @@ class CategoryDetail(APIView):
     serializer_class = CategorySerializer
     def get(self, request, pk):
         category = get_object_or_404(Category, pk=pk)
-        srz_data = CategorySerializer(category)
+        srz_data = self.serializer_class(category)
         return Response(srz_data.data)
 
 
@@ -184,7 +177,7 @@ class CategoryCreate(APIView):
     serializer_class = CategorySerializer
     def post(self, request):
         current_user = get_current_user_from_token(request)
-        srz_data = CategorySerializer(data=request.data)
+        srz_data = self.serializer_class(data=request.data)
         if srz_data.is_valid():
             srz_data.save(user=current_user)
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
@@ -199,7 +192,7 @@ class CategoryUpdate(APIView):
     serializer_class = CategorySerializer
     def put(self, request, pk):
         queryset = get_object_or_404(Category, pk=pk)
-        srz_data = CategorySerializer(queryset, data=request.data, partial=True)
+        srz_data = self.serializer_class(queryset, data=request.data, partial=True)
         if srz_data.is_valid():
             srz_data.save()
             return Response(srz_data.data, status=status.HTTP_200_OK)
@@ -216,7 +209,7 @@ class CategoryDelete(APIView):
         category = get_object_or_404(Category, pk=pk)
         category.is_active = False
         category.save()
-        serializer = CategorySerializer(category)
+        serializer = self.serializer_class(category)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -228,7 +221,7 @@ class WishlistList(APIView):
     serializer_class = WishListSerializer
     def get(self, request):
         queryset = Wishlist.objects.all()
-        srz_data = WishListSerializer(queryset, many=True)
+        srz_data = self.serializer_class(queryset, many=True)
         return Response(srz_data.data)
 
 
@@ -240,7 +233,7 @@ class WishlistCreate(APIView):
     serializer_class = WishListSerializer
     def post(self, request):
         current_user = get_current_user_from_token(request)
-        queryset = WishListSerializer(data=request.data)
+        queryset = self.serializer_class(data=request.data)
         self.check_object_permissions(request, queryset)
         if queryset.is_valid():
             queryset.save(user=current_user)
@@ -259,5 +252,5 @@ class WishlistDelete(APIView):
         self.check_object_permissions(request, wishlist)
         wishlist.is_active = False
         wishlist.save()
-        serializer = WishListSerializer(wishlist)
+        serializer = self.serializer_class(wishlist)
         return Response(serializer.data, status=status.HTTP_200_OK)

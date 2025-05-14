@@ -2,15 +2,16 @@ from django.contrib.auth import update_session_auth_hash
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import User, Address, Country,City
-from .serializers import UserSerializer,AddressSerializer,CountrySerializer,CitySerializer,ChangePasswordSerializer
+from .models import User, Address, Country, City
+from .serializers import UserSerializer, AddressSerializer, CountrySerializer, CitySerializer, ChangePasswordSerializer
 from django.shortcuts import get_object_or_404
 import jwt
 from django.conf import settings
 from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.permissions import IsAuthenticated,IsAdminUser
-from core.permissions import IsOwnerOrAdmin,IsSellerOrAdmin
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from core.permissions import IsOwnerOrAdmin, IsSellerOrAdmin
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import generics
 
 
 class UserList(APIView):
@@ -20,10 +21,11 @@ class UserList(APIView):
     permission_classes = [IsAdminUser]
     serializer_class = UserSerializer
 
-    def get(self,request):
+    def get(self, request):
         queryset = User.objects.all()
         srz_data = self.serializer_class(queryset, many=True)
         return Response(srz_data.data)
+
 
 class UserDetail(APIView):
     """
@@ -32,11 +34,11 @@ class UserDetail(APIView):
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = UserSerializer
 
-    def get(self,request,pk):
-        user = get_object_or_404(User,pk=pk)
-        self.check_object_permissions(request,user)
+    def get(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        self.check_object_permissions(request, user)
         srz_data = self.serializer_class(user)
-        return Response(srz_data.data,status=status.HTTP_200_OK)
+        return Response(srz_data.data, status=status.HTTP_200_OK)
 
 
 class UserCreate(APIView):
@@ -45,13 +47,13 @@ class UserCreate(APIView):
     """
     serializer_class = UserSerializer
 
-    @swagger_auto_schema(request_body=UserSerializer)
-    def post(self,request):
+    def post(self, request):
         srz_data = self.serializer_class(data=request.data)
         if srz_data.is_valid():
             srz_data.save()
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UserUpdate(APIView):
     """
@@ -59,6 +61,7 @@ class UserUpdate(APIView):
     """
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = UserSerializer
+
     def put(self, request, pk):
         queryset = get_object_or_404(User, id=pk)
         self.check_object_permissions(request, queryset)
@@ -75,6 +78,7 @@ class UserDelete(APIView):
     """
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = UserSerializer
+
     def delete(self, request, pk):
         user = get_object_or_404(User, pk=pk)
         self.check_object_permissions(request, user)
@@ -83,17 +87,20 @@ class UserDelete(APIView):
         serializer = self.serializer_class(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class AddressList(APIView):
     """
     address list
     """
     permission_classes = [IsAdminUser]
     serializer_class = AddressSerializer
-    def get(self,request):
+
+    def get(self, request):
         queryset = Address.objects.all()
         self.check_object_permissions(request, queryset)
         srz_data = self.serializer_class(queryset, many=True)
         return Response(srz_data.data)
+
 
 class AddressDetail(APIView):
     """address detail"""
@@ -106,13 +113,15 @@ class AddressDetail(APIView):
         srz_data = self.serializer_class(address)
         return Response(srz_data.data)
 
+
 class AddressCreate(APIView):
     """
     create a new address
     """
     permission_classes = [IsAuthenticated]
     serializer_class = AddressSerializer
-    def post(self,request):
+
+    def post(self, request):
         current_user = get_current_user_from_token(request)
         srz_data = self.serializer_class(data=request.data)
         if srz_data.is_valid():
@@ -121,20 +130,23 @@ class AddressCreate(APIView):
         print(srz_data.errors)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class AddressUpdate(APIView):
     """
     update a address
     """
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = AddressSerializer
-    def put(self,request,pk):
+
+    def put(self, request, pk):
         queryset = get_object_or_404(Address, pk=pk)
         self.check_object_permissions(request, queryset)
-        srz_data = self.serializer_class(queryset, data=request.data,partial=True)
+        srz_data = self.serializer_class(queryset, data=request.data, partial=True)
         if srz_data.is_valid():
             srz_data.save()
             return Response(srz_data.data, status=status.HTTP_200_OK)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class AddressDelete(APIView):
     """
@@ -142,7 +154,8 @@ class AddressDelete(APIView):
     """
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = AddressSerializer
-    def delete(self,request,pk):
+
+    def delete(self, request, pk):
         address = get_object_or_404(Address, id=pk)
         self.check_object_permissions(request, address)
         address.is_active = False
@@ -150,16 +163,19 @@ class AddressDelete(APIView):
         serializer = self.serializer_class(address)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class CountryList(APIView):
     """
     country list
     """
     permission_classes = [IsAuthenticated]
     serializer_class = CountrySerializer
-    def get(self,request):
+
+    def get(self, request):
         queryset = Country.objects.all()
         srz_data = self.serializer_class(queryset, many=True)
         return Response(srz_data.data)
+
 
 class CityList(APIView):
     """
@@ -167,27 +183,30 @@ class CityList(APIView):
     """
     permission_classes = [IsAuthenticated]
     serializer_class = CitySerializer
-    def get(self,request):
+
+    def get(self, request):
         queryset = City.objects.all()
         srz_data = self.serializer_class(queryset, many=True)
         return Response(srz_data.data)
 
-class ChangePasswordView(APIView):
+
+class ChangePasswordView(generics.GenericAPIView):
     """
     change password with valid password
     """
     permission_classes = [IsAuthenticated]
     serializer_class = ChangePasswordSerializer
 
-    def post(self, request):
+    def put(self, request):
         serializer = self.serializer_class(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
-            return Response({'message':'your password changed!!'}, status=200)
+            return Response({'message': 'your password changed!!'}, status=200)
         return Response(serializer.errors, status=400)
 
 
 """for getting user ID in """
+
 
 def get_current_user_from_token(request):
     # استخراج توکن از header

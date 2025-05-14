@@ -17,7 +17,7 @@ class User(AbstractUser):
 
 
     def __str__(self):
-        return f"{self.username} ({self.role})"
+        return f"{self.email} ({self.role})"
 
 class Country(models.Model):
     name = models.CharField(max_length=255)

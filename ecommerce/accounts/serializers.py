@@ -41,14 +41,22 @@ class UserSerializer(serializers.ModelSerializer):
             validate_password(attrs.get('password'))
         except exceptions.ValidationError as e:
             raise serializers.ValidationError({'password': list(e.messages)})
+        return attrs
 
 
-
+    """for hashing password"""
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
 
 
+    """to responce just id and username"""
+    def to_representation(self, instance):
+        # فقط id و username در پاسخ برگشت داده میشه
+        return {
+            'id': instance.id,
+            'username': instance.username
+        }
 
 
 class AddressSerializer(serializers.ModelSerializer):
@@ -60,13 +68,14 @@ class AddressSerializer(serializers.ModelSerializer):
 
 
 class ChangePasswordSerializer(serializers.Serializer):
+    """changing password from user"""
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
     new_password1 = serializers.CharField(required=True)
 
     def validate(self, attrs):
         if attrs['new_password'] != attrs['new_password1']:
-            raise serializers.ValidationError("رمز جدید و تکرار آن یکسان نیستند.")
+            raise serializers.ValidationError("password dosent match")
 
         validate_password(attrs['new_password'])
 

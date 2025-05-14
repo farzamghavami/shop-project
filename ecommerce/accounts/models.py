@@ -3,7 +3,15 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-class User(AbstractUser):
+
+class Time(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+class User(AbstractUser,Time):
     ROLE_CHOICES = (
         ('ADMIN', 'Admin'),
         ('SELLER', 'Seller'),
@@ -32,7 +40,7 @@ class City(models.Model):
     def __str__(self):
         return f"{self.name}, {self.country.name}"
 
-class Address(models.Model):
+class Address(Time):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     street = models.CharField(max_length=255)
@@ -41,4 +49,6 @@ class Address(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.city.name}"
+
+
 

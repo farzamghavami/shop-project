@@ -20,6 +20,7 @@ class CitySerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'country']
 
         """ this code is for showing all of thing in CountrySerializer """
+
         def to_representation(self, instance):
             rep = super().to_representation(instance)
             rep['country'] = CountrySerializer(instance.country).data
@@ -27,11 +28,14 @@ class CitySerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    password1 = serializers.CharField(max_length=255, write_only=True)
+
     class Meta:
-        password1 = serializers.CharField(max_length=255, write_only=True)
+
         model = User
-        fields = ['id', 'username', 'email', 'phone', 'role','password','password1']
-        extra_kwargs = {'password': {'write_only': True},'role': {'read_only': True}}
+        fields = ['id', 'username', 'email', 'phone', 'role', 'password', 'password1', 'created_at', 'updated_at']
+        extra_kwargs = {'password': {'write_only': True}, 'role': {'read_only': True},
+                        'created_at': {'read_only': True}, 'updated_at': {'read_only': True}}
 
     def validate(self, attrs):
         if attrs.get('password') != attrs.get('password1'):
@@ -43,28 +47,27 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({'password': list(e.messages)})
         return attrs
 
-
     """for hashing password"""
+
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
 
-
-
-    """to responce just id and username"""
-    def to_representation(self, instance):
-        # فقط id و username در پاسخ برگشت داده میشه
-        return {
-            'id': instance.id,
-            'username': instance.username
-        }
+    # """to responce just id and username"""
+    # def to_representation(self, instance):
+    #     # فقط id و username در پاسخ برگشت داده میشه
+    #     return {
+    #         'id': instance.id,
+    #         'username': instance.username
+    #     }
 
 
 class AddressSerializer(serializers.ModelSerializer):
     city = serializers.PrimaryKeyRelatedField(queryset=City.objects.all())
+
     class Meta:
         model = Address
-        fields = ['id', 'city','user', 'street', 'zip_code','is_active']
+        fields = ['id', 'city', 'user', 'street', 'zip_code', 'is_active', 'created_at', 'updated_at']
         extra_kwargs = {'user': {'read_only': True}}
 
 

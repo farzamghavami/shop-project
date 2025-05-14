@@ -1,4 +1,3 @@
-from django.contrib.auth import update_session_auth_hash
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -9,11 +8,8 @@ import jwt
 from django.conf import settings
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from core.permissions import IsOwnerOrAdmin, IsSellerOrAdmin
-from drf_yasg.utils import swagger_auto_schema
+from core.permissions import IsOwnerOrAdmin
 from rest_framework import generics
-
-
 class UserList(APIView):
     """
     user list

@@ -50,6 +50,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
+
     """to responce just id and username"""
     def to_representation(self, instance):
         # فقط id و username در پاسخ برگشت داده میشه

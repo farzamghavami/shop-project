@@ -11,12 +11,10 @@ class IsSellerOrAdmin(BasePermission):
     """
 
     def has_permission(self, request, view):
-        return (
-                request.user.is_authenticated and (
-                request.user.role == 'SELLER' or
-                request.user.is_staff or
-                request.user.is_superuser
-        )
+        return request.user.is_authenticated and (
+            request.user.role == "SELLER"
+            or request.user.is_staff
+            or request.user.is_superuser
         )
 
 
@@ -29,6 +27,7 @@ class IsSellerOrAdmin(BasePermission):
 #     def has_object_permission(self, request, view, obj):
 #         return obj.owner == request.user or request.user.is_staff
 
+
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
     Only allow object owner to edit; anyone can read.
@@ -38,7 +37,6 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         return obj.owner == request.user
-
 
 
 class IsOwnerOrAdmin(BasePermission):
@@ -62,17 +60,16 @@ class IsOwnerOrAdmin(BasePermission):
             return obj
 
         # حالت مستقیم
-        for attr in ['user', 'owner']:
+        for attr in ["user", "owner"]:
             if hasattr(obj, attr):
                 return getattr(obj, attr)
 
         # حالت غیرمستقیم
-        for relation in ['order', 'shop', 'product']:
+        for relation in ["order", "shop", "product"]:
             related_obj = getattr(obj, relation, None)
             if related_obj:
-                for attr in ['user', 'owner']:
+                for attr in ["user", "owner"]:
                     if hasattr(related_obj, attr):
                         return getattr(related_obj, attr)
 
         return None
-

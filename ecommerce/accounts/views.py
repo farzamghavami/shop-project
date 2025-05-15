@@ -2,7 +2,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import User, Address, Country, City
-from .serializers import UserSerializer, AddressSerializer, CountrySerializer, CitySerializer, ChangePasswordSerializer
+from .serializers import (
+    UserSerializer,
+    AddressSerializer,
+    CountrySerializer,
+    CitySerializer,
+    ChangePasswordSerializer,
+)
 from django.shortcuts import get_object_or_404
 import jwt
 from django.conf import settings
@@ -10,10 +16,13 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from core.permissions import IsOwnerOrAdmin
 from rest_framework import generics
+
+
 class UserList(APIView):
     """
     user list
     """
+
     permission_classes = [IsAdminUser]
     serializer_class = UserSerializer
 
@@ -27,6 +36,7 @@ class UserDetail(APIView):
     """
     account detail
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = UserSerializer
 
@@ -41,6 +51,7 @@ class UserCreate(APIView):
     """
     create a new user
     """
+
     serializer_class = UserSerializer
 
     def post(self, request):
@@ -55,6 +66,7 @@ class UserUpdate(APIView):
     """
     update a user
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = UserSerializer
 
@@ -72,6 +84,7 @@ class UserDelete(APIView):
     """
     user delete
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = UserSerializer
 
@@ -88,6 +101,7 @@ class AddressList(APIView):
     """
     address list
     """
+
     permission_classes = [IsAdminUser]
     serializer_class = AddressSerializer
 
@@ -100,6 +114,7 @@ class AddressList(APIView):
 
 class AddressDetail(APIView):
     """address detail"""
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = AddressSerializer
 
@@ -114,6 +129,7 @@ class AddressCreate(APIView):
     """
     create a new address
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = AddressSerializer
 
@@ -131,6 +147,7 @@ class AddressUpdate(APIView):
     """
     update a address
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = AddressSerializer
 
@@ -148,6 +165,7 @@ class AddressDelete(APIView):
     """
     address delete
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = AddressSerializer
 
@@ -164,6 +182,7 @@ class CountryList(APIView):
     """
     country list
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = CountrySerializer
 
@@ -177,6 +196,7 @@ class CityList(APIView):
     """
     city list
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = CitySerializer
 
@@ -190,14 +210,17 @@ class ChangePasswordView(generics.GenericAPIView):
     """
     change password with valid password
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = ChangePasswordSerializer
 
     def put(self, request):
-        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer = self.serializer_class(
+            data=request.data, context={"request": request}
+        )
         if serializer.is_valid():
             serializer.save()
-            return Response({'message': 'your password changed!!'}, status=200)
+            return Response({"message": "your password changed!!"}, status=200)
         return Response(serializer.errors, status=400)
 
 
@@ -206,30 +229,30 @@ class ChangePasswordView(generics.GenericAPIView):
 
 def get_current_user_from_token(request):
     # استخراج توکن از header
-    auth_header = request.headers.get('Authorization')
+    auth_header = request.headers.get("Authorization")
 
-    if not auth_header or not auth_header.startswith('Bearer '):
-        raise AuthenticationFailed('توکن یافت نشد یا فرمت اشتباه است.')
+    if not auth_header or not auth_header.startswith("Bearer "):
+        raise AuthenticationFailed("توکن یافت نشد یا فرمت اشتباه است.")
 
-    token = auth_header.split(' ')[1]
+    token = auth_header.split(" ")[1]
 
     try:
         # دیکود کردن توکن با secret key
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-        user_id = payload.get('user_id')
+        user_id = payload.get("user_id")
 
         if user_id is None:
-            raise AuthenticationFailed('توکن معتبر نیست.')
+            raise AuthenticationFailed("توکن معتبر نیست.")
 
         try:
             user = User.objects.get(id=user_id)
             return user
 
         except User.DoesNotExist:
-            raise AuthenticationFailed('کاربر یافت نشد.')
+            raise AuthenticationFailed("کاربر یافت نشد.")
 
     except jwt.ExpiredSignatureError:
-        raise AuthenticationFailed('توکن منقضی شده.')
+        raise AuthenticationFailed("توکن منقضی شده.")
 
     except jwt.InvalidTokenError:
-        raise AuthenticationFailed('توکن نامعتبر است.')
+        raise AuthenticationFailed("توکن نامعتبر است.")

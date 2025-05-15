@@ -2,18 +2,21 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated,IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .models import Comment, Rate
 from .serializers import CommentSerializer, RateSerializer
-from core.permissions import IsSellerOrAdmin,IsOwnerOrAdmin
+from core.permissions import IsSellerOrAdmin, IsOwnerOrAdmin
 from accounts.views import get_current_user_from_token
+
 
 class CommentCreateView(APIView):
     """
     create a new comment
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = CommentSerializer
+
     def post(self, request):
         current_user = get_current_user_from_token(request)
         serializer = self.serializer_class(data=request.data)
@@ -27,6 +30,7 @@ class CommentListView(APIView):
     """
     all comments
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = CommentSerializer
 
@@ -35,10 +39,12 @@ class CommentListView(APIView):
         serializer = self.serializer_class(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class CommentDetailView(APIView):
     """
     read one comment
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = CommentSerializer
 
@@ -47,10 +53,12 @@ class CommentDetailView(APIView):
         serializer = self.serializer_class(comment)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class CommentUpdateView(APIView):
     """
     update one comment
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = CommentSerializer
 
@@ -63,12 +71,15 @@ class CommentUpdateView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class CommentDeleteView(APIView):
     """
     delete one comment
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = CommentSerializer
+
     def delete(self, request, pk):
         comment = get_object_or_404(Comment, pk=pk)
         self.check_object_permissions(comment, request.user)
@@ -76,24 +87,28 @@ class CommentDeleteView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-
 class RatingDetailView(APIView):
     """
     get one rating
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = RateSerializer
+
     def get(self, request, pk):
         comment = get_object_or_404(Comment, parent=None, pk=pk)
         serializer = self.serializer_class(comment)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class RatingCreateView(APIView):
     """
     create one rating
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = RateSerializer
+
     def post(self, request):
         current_user = get_current_user_from_token(request)
         srz_data = self.serializer_class(data=request.data)

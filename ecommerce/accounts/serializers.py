@@ -9,7 +9,7 @@ from django.core import exceptions
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
-        fields = ['id', 'name']
+        fields = ["id", "name"]
 
 
 class CitySerializer(serializers.ModelSerializer):
@@ -17,13 +17,13 @@ class CitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = City
-        fields = ['id', 'name', 'country']
+        fields = ["id", "name", "country"]
 
         """ this code is for showing all of thing in CountrySerializer """
 
         def to_representation(self, instance):
             rep = super().to_representation(instance)
-            rep['country'] = CountrySerializer(instance.country).data
+            rep["country"] = CountrySerializer(instance.country).data
             return rep
 
 
@@ -33,18 +33,32 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = User
-        fields = ['id', 'username', 'email', 'phone', 'role', 'password', 'password1', 'created_at', 'updated_at']
-        extra_kwargs = {'password': {'write_only': True}, 'role': {'read_only': True},
-                        'created_at': {'read_only': True}, 'updated_at': {'read_only': True}}
+        fields = [
+            "id",
+            "username",
+            "email",
+            "phone",
+            "role",
+            "password",
+            "password1",
+            "created_at",
+            "updated_at",
+        ]
+        extra_kwargs = {
+            "password": {"write_only": True},
+            "role": {"read_only": True},
+            "created_at": {"read_only": True},
+            "updated_at": {"read_only": True},
+        }
 
     def validate(self, attrs):
-        if attrs.get('password') != attrs.get('password1'):
-            raise serializers.ValidationError('Passwords must match')
+        if attrs.get("password") != attrs.get("password1"):
+            raise serializers.ValidationError("Passwords must match")
 
         try:
-            validate_password(attrs.get('password'))
+            validate_password(attrs.get("password"))
         except exceptions.ValidationError as e:
-            raise serializers.ValidationError({'password': list(e.messages)})
+            raise serializers.ValidationError({"password": list(e.messages)})
         return attrs
 
     """for hashing password"""
@@ -67,30 +81,40 @@ class AddressSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Address
-        fields = ['id', 'city', 'user', 'street', 'zip_code', 'is_active', 'created_at', 'updated_at']
-        extra_kwargs = {'user': {'read_only': True}}
+        fields = [
+            "id",
+            "city",
+            "user",
+            "street",
+            "zip_code",
+            "is_active",
+            "created_at",
+            "updated_at",
+        ]
+        extra_kwargs = {"user": {"read_only": True}}
 
 
 class ChangePasswordSerializer(serializers.Serializer):
     """changing password from user"""
+
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
     new_password1 = serializers.CharField(required=True)
 
     def validate(self, attrs):
-        if attrs['new_password'] != attrs['new_password1']:
+        if attrs["new_password"] != attrs["new_password1"]:
             raise serializers.ValidationError("password dosent match")
 
-        validate_password(attrs['new_password'])
+        validate_password(attrs["new_password"])
 
-        user = self.context['request'].user
-        if not user.check_password(attrs['old_password']):
+        user = self.context["request"].user
+        if not user.check_password(attrs["old_password"]):
             raise serializers.ValidationError("رمز فعلی اشتباه است.")
 
         return attrs
 
     def save(self, **kwargs):
-        user = self.context['request'].user
-        user.set_password(self.validated_data['new_password'])
+        user = self.context["request"].user
+        user.set_password(self.validated_data["new_password"])
         user.save()
         return user

@@ -1,10 +1,15 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.permissions import IsAuthenticated,IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from .models import Category, Product, Shop, Wishlist
-from .serializers import CategorySerializer, ProductSerializer, ShopSerializer, WishListSerializer
+from .serializers import (
+    CategorySerializer,
+    ProductSerializer,
+    ShopSerializer,
+    WishListSerializer,
+)
 from accounts.views import get_current_user_from_token
 from core.permissions import *
 from rest_framework.generics import ListAPIView
@@ -14,27 +19,34 @@ class ProductList(ListAPIView):
     """
     list all products
     """
+
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated]
     queryset = Product.objects.all()
+
 
 class ProductDetail(APIView):
     """
     detail single product
     """
+
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated]
+
     def get(self, request, pk):
         queryset = get_object_or_404(Product, pk=pk)
         srz_data = self.serializer_class(queryset)
         return Response(srz_data.data)
 
+
 class ProductCreate(APIView):
     """
     create new product
     """
+
     permission_classes = [IsSellerOrAdmin]
     serializer_class = ProductSerializer
+
     def post(self, request):
         srz_data = self.serializer_class(data=request.data)
         current_user = get_current_user_from_token(request)
@@ -43,12 +55,15 @@ class ProductCreate(APIView):
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class ProductUpdate(APIView):
     """
     update single product
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = ProductSerializer
+
     def put(self, request, pk):
         queryset = get_object_or_404(Product, pk=pk)
         self.check_object_permissions(request, queryset)
@@ -63,8 +78,10 @@ class ProductDelete(APIView):
     """
     delete single product
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = ProductSerializer
+
     def delete(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
         self.check_object_permissions(request, product)
@@ -78,18 +95,20 @@ class ShopList(ListAPIView):
     """
     List all shops
     """
+
     serializer_class = ShopSerializer
     permission_classes = [IsAuthenticated]
     queryset = Shop.objects.all()
-
 
 
 class ShopDetail(APIView):
     """
     detail single shop
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = ShopSerializer
+
     def get(self, request, pk):
         shop = get_object_or_404(Shop, pk=pk)
         self.check_object_permissions(request, shop)
@@ -101,8 +120,10 @@ class ShopCreate(APIView):
     """
     create new shop
     """
+
     permission_classes = [IsSellerOrAdmin]
     serializer_class = ShopSerializer
+
     def post(self, request):
         current_user = get_current_user_from_token(request)
         self.check_object_permissions(request, request)
@@ -117,8 +138,10 @@ class ShopUpdate(APIView):
     """
     update single shop
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = ShopSerializer
+
     def put(self, request, pk):
         queryset = get_object_or_404(Shop, pk=pk)
         self.check_object_permissions(request, queryset)
@@ -133,8 +156,10 @@ class ShopDelete(APIView):
     """
     delete single shop
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = ShopSerializer
+
     def delete(self, request, pk):
         shop = get_object_or_404(Shop, pk=pk)
         self.check_object_permissions(request, shop)
@@ -148,11 +173,13 @@ class CategoryList(APIView):
     """
     list all categories
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = CategorySerializer
+
     def get(self, request):
         queryset = Category.objects.all()
-        self.check_object_permissions(request,queryset)
+        self.check_object_permissions(request, queryset)
         srz_data = CategorySerializer(queryset, many=True)
         return Response(srz_data.data)
 
@@ -161,8 +188,10 @@ class CategoryDetail(APIView):
     """
     detail single category
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = CategorySerializer
+
     def get(self, request, pk):
         category = get_object_or_404(Category, pk=pk)
         srz_data = self.serializer_class(category)
@@ -173,8 +202,10 @@ class CategoryCreate(APIView):
     """
     create new category
     """
+
     permission_classes = [IsAdminUser]
     serializer_class = CategorySerializer
+
     def post(self, request):
         current_user = get_current_user_from_token(request)
         srz_data = self.serializer_class(data=request.data)
@@ -188,8 +219,10 @@ class CategoryUpdate(APIView):
     """
     update single category
     """
+
     permission_classes = [IsAdminUser]
     serializer_class = CategorySerializer
+
     def put(self, request, pk):
         queryset = get_object_or_404(Category, pk=pk)
         srz_data = self.serializer_class(queryset, data=request.data, partial=True)
@@ -203,8 +236,10 @@ class CategoryDelete(APIView):
     """
     delete single category
     """
+
     permission_classes = [IsAdminUser]
     serializer_class = CategorySerializer
+
     def delete(self, request, pk):
         category = get_object_or_404(Category, pk=pk)
         category.is_active = False
@@ -217,8 +252,10 @@ class WishlistList(APIView):
     """
     list all wishlist
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = WishListSerializer
+
     def get(self, request):
         queryset = Wishlist.objects.all()
         srz_data = self.serializer_class(queryset, many=True)
@@ -229,8 +266,10 @@ class WishlistCreate(APIView):
     """
     create new wishlist
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = WishListSerializer
+
     def post(self, request):
         current_user = get_current_user_from_token(request)
         queryset = self.serializer_class(data=request.data)
@@ -245,8 +284,10 @@ class WishlistDelete(APIView):
     """
     delete wishlist
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = WishListSerializer
+
     def delete(self, request, pk):
         wishlist = get_object_or_404(Wishlist, pk=pk)
         self.check_object_permissions(request, wishlist)

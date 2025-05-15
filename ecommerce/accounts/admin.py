@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User,Address,City,Country
+from .models import User, Address, City, Country
 
 admin.site.register(User)
 admin.site.register(Address)

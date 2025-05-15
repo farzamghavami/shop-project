@@ -6,7 +6,12 @@ from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from accounts.views import get_current_user_from_token
 from .models import Order, OrderItem, Delivery
-from .serializers import OrderSerializer, OrderItem, DeliverySerializer, OrderItemSerializer
+from .serializers import (
+    OrderSerializer,
+    OrderItem,
+    DeliverySerializer,
+    OrderItemSerializer,
+)
 from core.permissions import IsOwnerOrAdmin, IsSellerOrAdmin
 
 
@@ -14,6 +19,7 @@ class OrderList(APIView):
     """
     list all orders
     """
+
     permission_classes = [IsAdminUser]
     serializer_class = OrderSerializer
 
@@ -27,6 +33,7 @@ class OrderDetail(APIView):
     """
     detail one order
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = OrderSerializer
 
@@ -41,6 +48,7 @@ class OrderCreate(APIView):
     """
     create a new order
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = OrderSerializer
 
@@ -58,6 +66,7 @@ class OrderUpdate(APIView):
     """
     update an order
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = OrderSerializer
 
@@ -75,6 +84,7 @@ class OrderDelete(APIView):
     """
     delete an order
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = OrderSerializer
 
@@ -91,6 +101,7 @@ class OrderItemList(APIView):
     """
     list all order items
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = OrderItemSerializer
 
@@ -105,6 +116,7 @@ class OrderItemDetail(APIView):
     """
     detail one order item
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = OrderItemSerializer
 
@@ -119,6 +131,7 @@ class OrderItemUpdate(APIView):
     """
     update an order item
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = OrderItemSerializer
 
@@ -136,6 +149,7 @@ class OrderItemDelete(APIView):
     """
     delete an order item
     """
+
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = OrderItemSerializer
 
@@ -152,6 +166,7 @@ class DeliveryList(APIView):
     """
     list all deliveries
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = DeliverySerializer
 
@@ -165,6 +180,7 @@ class DeliveryDetail(APIView):
     """
     detail one delivery
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = DeliverySerializer
 
@@ -178,6 +194,7 @@ class DeliveryCreate(APIView):
     """
     create a new delivery
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = DeliverySerializer
 
@@ -193,6 +210,7 @@ class DeliveryDelete(APIView):
     """
     delete an delivery
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = DeliverySerializer
 

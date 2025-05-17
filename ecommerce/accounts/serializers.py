@@ -28,8 +28,6 @@ class CitySerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    password1 = serializers.CharField(max_length=255, write_only=True)
-
     class Meta:
 
         model = User
@@ -39,26 +37,27 @@ class UserSerializer(serializers.ModelSerializer):
             "email",
             "phone",
             "role",
-            "password",
             "password1",
+            "password2",
             "created_at",
             "updated_at",
         ]
         extra_kwargs = {
-            "password": {"write_only": True},
+            "password1": {"write_only": True},
+            "password2": {"write_only": True},
             "role": {"read_only": True},
             "created_at": {"read_only": True},
             "updated_at": {"read_only": True},
         }
 
     def validate(self, attrs):
-        if attrs.get("password") != attrs.get("password1"):
+        if attrs.get("password1") != attrs.get("password2"):
             raise serializers.ValidationError("Passwords must match")
 
         try:
-            validate_password(attrs.get("password"))
+            validate_password(attrs.get("password1"))
         except exceptions.ValidationError as e:
-            raise serializers.ValidationError({"password": list(e.messages)})
+            raise serializers.ValidationError({"password1": list(e.messages)})
         return attrs
 
     """for hashing password"""

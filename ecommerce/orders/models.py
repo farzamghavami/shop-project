@@ -1,10 +1,10 @@
 from django.db import models
 from django.db.models.fields import FloatField
-from accounts.models import User, Address
+from accounts.models import User, Address,Time
 from catalog.models import Product, Shop
 
 
-class Order(models.Model):
+class Order(Time):
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)

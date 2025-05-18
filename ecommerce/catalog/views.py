@@ -49,9 +49,8 @@ class ProductCreate(APIView):
 
     def post(self, request):
         srz_data = self.serializer_class(data=request.data)
-        current_user = get_current_user_from_token(request)
         if srz_data.is_valid():
-            srz_data.save(user=current_user)
+            srz_data.save()
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -207,10 +206,9 @@ class CategoryCreate(APIView):
     serializer_class = CategorySerializer
 
     def post(self, request):
-        current_user = get_current_user_from_token(request)
         srz_data = self.serializer_class(data=request.data)
         if srz_data.is_valid():
-            srz_data.save(user=current_user)
+            srz_data.save()
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -264,9 +262,8 @@ class WishlistList(APIView):
 
 class WishlistCreate(APIView):
     """
-    create new wishlist
+    Create new wishlist
     """
-
     permission_classes = [IsAuthenticated]
     serializer_class = WishListSerializer
 
@@ -274,10 +271,34 @@ class WishlistCreate(APIView):
         current_user = get_current_user_from_token(request)
         queryset = self.serializer_class(data=request.data)
         self.check_object_permissions(request, queryset)
+
         if queryset.is_valid():
+            product_id = queryset.validated_data.get("product").id
+
+            # بررسی وجود قبلی
+            if Wishlist.objects.filter(user=current_user, product_id=product_id).exists():
+                return Response(
+                    {"detail": "این محصول قبلاً به علاقه‌مندی‌ها اضافه شده است."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # ذخیره‌سازی در صورت عدم وجود
             queryset.save(user=current_user)
             return Response(queryset.data, status=status.HTTP_201_CREATED)
+
         return Response(queryset.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class WishListDetail(APIView):
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = WishListSerializer
+
+    def get(self, request, pk):
+        wishlist = get_object_or_404(Wishlist, pk=pk)
+        srz_data = self.serializer_class(wishlist)
+        return Response(srz_data.data)
+
+
 
 
 class WishlistDelete(APIView):
@@ -289,9 +310,10 @@ class WishlistDelete(APIView):
     serializer_class = WishListSerializer
 
     def delete(self, request, pk):
+        current_user = get_current_user_from_token(request)
         wishlist = get_object_or_404(Wishlist, pk=pk)
         self.check_object_permissions(request, wishlist)
         wishlist.is_active = False
-        wishlist.save()
+        wishlist.save(user=current_user)
         serializer = self.serializer_class(wishlist)
         return Response(serializer.data, status=status.HTTP_200_OK)

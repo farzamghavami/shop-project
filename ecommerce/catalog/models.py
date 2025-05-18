@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from accounts.models import Time
 
 User = get_user_model()
 from accounts.models import Address, User
@@ -8,12 +9,7 @@ from accounts.models import Address, User
 class Category(models.Model):
     name = models.CharField(max_length=100)
     parent = models.ForeignKey(
-        "self", null=True, blank=True, on_delete=models.CASCADE, related_name="children"
-    )
-    user = models.ForeignKey(
-        get_user_model(), on_delete=models.CASCADE, related_name="categories"
-    )
-
+        "self", null=True, blank=True, on_delete=models.CASCADE, related_name="children")
     def __str__(self):
         full_path = [self.name]
         k = self.parent
@@ -23,7 +19,7 @@ class Category(models.Model):
         return " / ".join(full_path[::-1])
 
 
-class Shop(models.Model):
+class Shop(Time):
     STATUS_CHOICES = (
         ("PENDING", "pending"),
         ("APPROVED", "approved"),
@@ -36,7 +32,7 @@ class Shop(models.Model):
     is_active = models.BooleanField(default=True)
 
 
-class Product(models.Model):
+class Product(Time):
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="products")
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name="products"
@@ -48,7 +44,7 @@ class Product(models.Model):
     image_url = models.CharField(max_length=200)
 
 
-class Wishlist(models.Model):
+class Wishlist(Time):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="wishlists")
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="wishlists"

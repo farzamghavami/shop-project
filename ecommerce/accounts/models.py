@@ -20,7 +20,7 @@ class User(AbstractUser, Time):
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="USER")
     is_active = models.BooleanField(default=True)
-    password1 = models.CharField(max_length=128, null=True)
+    password1 = models.CharField(max_length=128,)
     password2 = models.CharField(max_length=255,)
 
     def __str__(self):

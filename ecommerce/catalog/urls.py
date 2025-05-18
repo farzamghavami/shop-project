@@ -18,6 +18,7 @@ from .views import (
     WishlistList,
     WishlistCreate,
     WishlistDelete,
+    WishListDetail,
 )
 
 urlpatterns = [
@@ -37,6 +38,7 @@ urlpatterns = [
     path("category/update/<int:pk>", CategoryUpdate.as_view()),
     path("category/delete/<int:pk>", CategoryDelete.as_view()),
     path("wishlist", WishlistList.as_view()),
+    path("wishlist/<int:pk>", WishListDetail.as_view()),
     path("wishlist/create", WishlistCreate.as_view()),
     path("wishlist/delete/<int:pk>", WishlistDelete.as_view()),
 ]

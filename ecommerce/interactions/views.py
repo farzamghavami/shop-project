@@ -101,18 +101,38 @@ class RatingDetailView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class RatingCreateView(APIView):
-    """
-    create one rating
-    """
-
+class RateCreateView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = RateSerializer
 
     def post(self, request):
-        current_user = get_current_user_from_token(request)
-        srz_data = self.serializer_class(data=request.data)
+        user = request.user
+        product_id = request.data.get("product")
+        score = request.data.get("score")
+
+        # بررسی مقدارهای ورودی
+        if not product_id or not score:
+            return Response({"detail": "فیلدهای محصول و امتیاز الزامی هستند."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            product_id = int(product_id)
+            score = int(score)
+        except ValueError:
+            return Response({"detail": "مقادیر نامعتبر هستند."}, status=400)
+
+        # جلوگیری از ثبت تکراری
+        if Rate.objects.filter(user=user, product_id=product_id).exists():
+            return Response({"detail": "شما قبلاً به این محصول امتیاز داده‌اید."}, status=400)
+
+        # ذخیره امتیاز
+        data = {
+            "user": user.id,
+            "product": product_id,
+            "score": score
+        }
+        srz_data = self.serializer_class(data=data)
         if srz_data.is_valid():
-            srz_data.save(user=current_user)
-            return Response(srz_data.data, status=status.HTTP_201_CREATED)
-        return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+            srz_data.save(user=user)  # کاربر رو دستی پاس می‌دیم چون read_only هست
+            return Response(srz_data.data, status=201)
+        return Response(srz_data.errors, status=400)

@@ -76,7 +76,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class AddressSerializer(serializers.ModelSerializer):
-    city = serializers.PrimaryKeyRelatedField(queryset=City.objects.all())
+    #using serializers of user and city for mor information like name and id of city and user fild fore get method
+    city = serializers.SerializerMethodField()
+    user = serializers.SerializerMethodField()
 
     class Meta:
         model = Address
@@ -92,6 +94,20 @@ class AddressSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {"user": {"read_only": True}}
 
+    """for getting more information about user and city(id,name)"""
+    def get_city(self, obj):
+
+        return {
+            "id": obj.city.id,
+            "name": obj.city.name
+        }
+
+    def get_user(self, obj):
+
+        return {
+            "id": obj.user.id,
+            "name": obj.user.username  # یا هر فیلدی که به عنوان نام کاربر دارید
+        }
 
 class ChangePasswordSerializer(serializers.Serializer):
     """changing password from user"""

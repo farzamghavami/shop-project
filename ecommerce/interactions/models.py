@@ -1,9 +1,10 @@
 from django.db import models
-from accounts.models import User
+from accounts.models import User,Time
 from catalog.models import Product
 
 
-class Rate(models.Model):
+
+class Rate(Time):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     score = models.IntegerField()
@@ -15,7 +16,7 @@ class Rate(models.Model):
         return f"{self.user.username} - {self.product.name}: {self.score}"
 
 
-class Comment(models.Model):
+class Comment(Time):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="comments"

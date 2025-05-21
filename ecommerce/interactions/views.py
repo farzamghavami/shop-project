@@ -7,8 +7,10 @@ from .models import Comment, Rate
 from .serializers import CommentSerializer, RateSerializer
 from core.permissions import IsSellerOrAdmin, IsOwnerOrAdmin
 from accounts.views import get_current_user_from_token
+from drf_spectacular.utils import extend_schema
 
 
+@extend_schema(tags=["comments"])
 class CommentCreateView(APIView):
     """
     create a new comment
@@ -26,6 +28,7 @@ class CommentCreateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(tags=["comments"])
 class CommentListView(APIView):
     """
     all comments
@@ -40,6 +43,7 @@ class CommentListView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@extend_schema(tags=["comments"])
 class CommentDetailView(APIView):
     """
     read one comment
@@ -54,6 +58,7 @@ class CommentDetailView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@extend_schema(tags=["comments"])
 class CommentUpdateView(APIView):
     """
     update one comment
@@ -72,6 +77,7 @@ class CommentUpdateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(tags=["comments"])
 class CommentDeleteView(APIView):
     """
     delete one comment
@@ -87,6 +93,7 @@ class CommentDeleteView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@extend_schema(tags=["rating"])
 class RatingDetailView(APIView):
     """
     get one rating
@@ -101,6 +108,7 @@ class RatingDetailView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@extend_schema(tags=["rating"])
 class RateCreateView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = RateSerializer

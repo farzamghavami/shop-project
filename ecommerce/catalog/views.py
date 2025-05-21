@@ -13,8 +13,9 @@ from .serializers import (
 from accounts.views import get_current_user_from_token
 from core.permissions import *
 from rest_framework.generics import ListAPIView
+from drf_spectacular.utils import extend_schema
 
-
+@extend_schema(tags=["products"])
 class ProductList(ListAPIView):
     """
     list all products
@@ -25,6 +26,7 @@ class ProductList(ListAPIView):
     queryset = Product.objects.all()
 
 
+@extend_schema(tags=["products"])
 class ProductDetail(APIView):
     """
     detail single product
@@ -39,6 +41,7 @@ class ProductDetail(APIView):
         return Response(srz_data.data)
 
 
+@extend_schema(tags=["products"])
 class ProductCreate(APIView):
     """
     create new product
@@ -55,6 +58,7 @@ class ProductCreate(APIView):
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(tags=["products"])
 class ProductUpdate(APIView):
     """
     update single product
@@ -73,6 +77,7 @@ class ProductUpdate(APIView):
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(tags=["products"])
 class ProductDelete(APIView):
     """
     delete single product
@@ -90,6 +95,7 @@ class ProductDelete(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@extend_schema(tags=["shops"])
 class ShopList(ListAPIView):
     """
     List all shops
@@ -100,6 +106,7 @@ class ShopList(ListAPIView):
     queryset = Shop.objects.all()
 
 
+@extend_schema(tags=["shops"])
 class ShopDetail(APIView):
     """
     detail single shop
@@ -115,6 +122,7 @@ class ShopDetail(APIView):
         return Response(srz_data.data)
 
 
+@extend_schema(tags=["shops"])
 class ShopCreate(APIView):
     """
     create new shop
@@ -133,6 +141,7 @@ class ShopCreate(APIView):
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(tags=["shops"])
 class ShopUpdate(APIView):
     """
     update single shop
@@ -151,6 +160,7 @@ class ShopUpdate(APIView):
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(tags=["shops"])
 class ShopDelete(APIView):
     """
     delete single shop
@@ -168,6 +178,7 @@ class ShopDelete(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@extend_schema(tags=["categories"])
 class CategoryList(APIView):
     """
     list all categories
@@ -183,6 +194,7 @@ class CategoryList(APIView):
         return Response(srz_data.data)
 
 
+@extend_schema(tags=["categories"])
 class CategoryDetail(APIView):
     """
     detail single category
@@ -197,6 +209,7 @@ class CategoryDetail(APIView):
         return Response(srz_data.data)
 
 
+@extend_schema(tags=["categories"])
 class CategoryCreate(APIView):
     """
     create new category
@@ -213,6 +226,7 @@ class CategoryCreate(APIView):
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(tags=["categories"])
 class CategoryUpdate(APIView):
     """
     update single category
@@ -230,6 +244,7 @@ class CategoryUpdate(APIView):
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(tags=["categories"])
 class CategoryDelete(APIView):
     """
     delete single category
@@ -245,7 +260,7 @@ class CategoryDelete(APIView):
         serializer = self.serializer_class(category)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+@extend_schema(tags=["wishlist"])
 class WishlistList(APIView):
     """
     list all wishlist
@@ -260,6 +275,7 @@ class WishlistList(APIView):
         return Response(srz_data.data)
 
 
+@extend_schema(tags=["wishlist"])
 class WishlistCreate(APIView):
     """
     Create new wishlist
@@ -300,7 +316,7 @@ class WishListDetail(APIView):
 
 
 
-
+@extend_schema(tags=["wishlist"])
 class WishlistDelete(APIView):
     """
     delete wishlist

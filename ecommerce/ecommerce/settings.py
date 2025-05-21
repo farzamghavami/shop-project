@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+from email.policy import default
 from pathlib import Path
 from datetime import timedelta
 import os
@@ -22,7 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-h%$jqxc!mcfhpyqgxnifbo(2_^mhpho4^uypjij_4xgmtv9_gs"
+SECRET_KEY = 'django-insecure-REPLACE_THIS_WITH_A_REAL_SECRET_KEY'
+DEBUG = True
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -49,7 +50,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "django_filters",
     "drf_yasg",
-]
+    ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -142,6 +143,13 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",  # اضافه کردن Browsable API
     ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
 }
 
 SIMPLE_JWT = {
@@ -150,9 +158,23 @@ SIMPLE_JWT = {
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "shop rest",
-    "DESCRIPTION": "Your project description",
-    "VERSION": "1.0.0",
+    'TITLE': 'shop-project',
+    'DESCRIPTION': 'مستندات کامل API پروژه فروشگاه',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,  # درخواست و پاسخ جدا نمایش داده شود
+    'SCHEMA_PATH_PREFIX': '/api/v[0-9]',  # در صورت وجود نسخه‌بندی
+    # سایر تنظیمات...
+    'SORT_OPERATION_PARAMETERS': True,  # مرتب‌سازی پارامترهای هر عملیات
+    'SORT_OPERATIONS': True,  # مرتب‌سازی خود عملیات‌ها
+    'SORT_PATHS': True,  # مرتب‌سازی مسیرهای URL
+    # 'TAGS': [
+    #     {'name': 'Users', 'description': 'عملیات مربوط به کاربران'},
+    #     {'name': 'Auth', 'description': 'احراز هویت و توکن'},
+    #     {'name': 'Addresses', 'description': 'مدیریت آدرس‌ها'},
+    #     {'name': 'Products', 'description': 'محصولات'},
+    #     {'name': 'Ratings', 'description': 'امتیازدهی به محصولات'},
+    # ],
 }
 #
 # REST_FRAMEWORK = {

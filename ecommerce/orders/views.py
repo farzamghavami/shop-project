@@ -13,8 +13,10 @@ from .serializers import (
     OrderItemSerializer,
 )
 from core.permissions import IsOwnerOrAdmin, IsSellerOrAdmin
+from drf_spectacular.utils import extend_schema
 
 
+@extend_schema(tags=["order"])
 class OrderList(APIView):
     """
     list all orders
@@ -29,6 +31,7 @@ class OrderList(APIView):
         return Response(serializers.data)
 
 
+@extend_schema(tags=["order"])
 class OrderDetail(APIView):
     """
     detail one order
@@ -44,6 +47,7 @@ class OrderDetail(APIView):
         return Response(serializer.data)
 
 
+@extend_schema(tags=["order"])
 class OrderCreate(APIView):
     """
     create a new order
@@ -62,6 +66,7 @@ class OrderCreate(APIView):
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(tags=["order"])
 class OrderUpdate(APIView):
     """
     update an order
@@ -80,6 +85,7 @@ class OrderUpdate(APIView):
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(tags=["order"])
 class OrderDelete(APIView):
     """
     delete an order
@@ -96,7 +102,7 @@ class OrderDelete(APIView):
         srz_data = self.serializer_class(object)
         return Response(srz_data.data, status=status.HTTP_204_NO_CONTENT)
 
-
+@extend_schema(tags=["orderitem"])
 class OrderItemList(APIView):
     """
     list all order items
@@ -111,7 +117,7 @@ class OrderItemList(APIView):
         srz_data = self.serializer_class(queryset, many=True)
         return Response(srz_data.data)
 
-
+@extend_schema(tags=["orderitem"])
 class OrderItemDetail(APIView):
     """
     detail one order item
@@ -126,7 +132,7 @@ class OrderItemDetail(APIView):
         serializers = self.serializer_class(orderitem)
         return Response(serializers.data)
 
-
+@extend_schema(tags=["orderitem"])
 class OrderItemUpdate(APIView):
     """
     update an order item
@@ -144,7 +150,7 @@ class OrderItemUpdate(APIView):
             return Response(srz_data.data, status=status.HTTP_200_OK)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@extend_schema(tags=["orderitem"])
 class OrderItemDelete(APIView):
     """
     delete an order item
@@ -161,7 +167,7 @@ class OrderItemDelete(APIView):
         srz_data = self.serializer_class(object)
         return Response(srz_data.data, status=status.HTTP_200_OK)
 
-
+@extend_schema(tags=["Delivery"])
 class DeliveryList(APIView):
     """
     list all deliveries
@@ -175,7 +181,7 @@ class DeliveryList(APIView):
         srz_data = self.serializer_class(queryset, many=True)
         return Response(srz_data.data)
 
-
+@extend_schema(tags=["Delivery"])
 class DeliveryDetail(APIView):
     """
     detail one delivery
@@ -189,7 +195,7 @@ class DeliveryDetail(APIView):
         srz_data = self.serializer_class(queryset, many=True)
         return Response(srz_data.data)
 
-
+@extend_schema(tags=["Delivery"])
 class DeliveryCreate(APIView):
     """
     create a new delivery
@@ -205,7 +211,7 @@ class DeliveryCreate(APIView):
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@extend_schema(tags=["Delivery"])
 class DeliveryDelete(APIView):
     """
     delete an delivery

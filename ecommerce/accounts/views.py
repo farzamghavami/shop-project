@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from .models import User, Address, Country, City
 from .serializers import (
@@ -16,22 +17,26 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from core.permissions import IsOwnerOrAdmin
 from rest_framework import generics
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
+from rest_framework.generics import ListAPIView
 
 
-class UserList(APIView):
+@extend_schema(tags=["Users"])
+class UserList(ListAPIView):
     """
-    user list
+    لیست کاربران
     """
-
     permission_classes = [IsAdminUser]
     serializer_class = UserSerializer
+    queryset = User.objects.all()
 
-    def get(self, request):
-        queryset = User.objects.all()
-        srz_data = self.serializer_class(queryset, many=True)
-        return Response(srz_data.data)
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['is_active', 'is_staff']
+    search_fields = ['username', 'email', 'first_name', 'last_name']
+    ordering_fields = ['username', 'email', 'date_joined']
 
-
+@extend_schema(tags=["Users"])
 class UserDetail(APIView):
     """
     account detail
@@ -46,7 +51,7 @@ class UserDetail(APIView):
         srz_data = self.serializer_class(user)
         return Response(srz_data.data, status=status.HTTP_200_OK)
 
-
+@extend_schema(tags=["Users"])
 class UserCreate(APIView):
     """
     create a new user
@@ -61,7 +66,7 @@ class UserCreate(APIView):
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@extend_schema(tags=["Users"])
 class UserUpdate(APIView):
     """
     update a user
@@ -79,7 +84,7 @@ class UserUpdate(APIView):
             return Response(srz_data.data, status=status.HTTP_200_OK)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@extend_schema(tags=["Users"])
 class UserDelete(APIView):
     """
     user delete
@@ -97,6 +102,7 @@ class UserDelete(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@extend_schema(tags=["Addresses"])
 class AddressList(APIView):
     """
     address list
@@ -112,6 +118,7 @@ class AddressList(APIView):
         return Response(srz_data.data)
 
 
+@extend_schema(tags=["Addresses"])
 class AddressDetail(APIView):
     """address detail"""
 
@@ -125,6 +132,7 @@ class AddressDetail(APIView):
         return Response(srz_data.data)
 
 
+@extend_schema(tags=["Addresses"])
 class AddressCreate(APIView):
     """
     create a new address
@@ -143,6 +151,7 @@ class AddressCreate(APIView):
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(tags=["Addresses"])
 class AddressUpdate(APIView):
     """
     update a address
@@ -161,6 +170,7 @@ class AddressUpdate(APIView):
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(tags=["Addresses"])
 class AddressDelete(APIView):
     """
     address delete
@@ -178,6 +188,7 @@ class AddressDelete(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@extend_schema(tags=["Countries"])
 class CountryList(APIView):
     """
     country list
@@ -192,6 +203,7 @@ class CountryList(APIView):
         return Response(srz_data.data)
 
 
+@extend_schema(tags=["Cities"])
 class CityList(APIView):
     """
     city list
@@ -205,7 +217,7 @@ class CityList(APIView):
         srz_data = self.serializer_class(queryset, many=True)
         return Response(srz_data.data)
 
-
+@extend_schema(tags=["ChangePassword"])
 class ChangePasswordView(generics.GenericAPIView):
     """
     change password with valid password

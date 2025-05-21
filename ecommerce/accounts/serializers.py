@@ -1,5 +1,3 @@
-from django.db.models.fields.json import CaseInsensitiveMixin
-from jsonschema import ValidationError
 from rest_framework import serializers
 from .models import User, Address, Country, City
 from django.contrib.auth.password_validation import validate_password

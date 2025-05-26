@@ -16,6 +16,7 @@ from .views import (
 )
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+app_name = "accounts_url"
 urlpatterns = [
 
     path("users", UserList.as_view()),
@@ -31,11 +32,11 @@ urlpatterns = [
 
     #list of city and country
     path("city", CityList.as_view()),
-    path("country", CountryList.as_view()),
+    path("country", CountryList.as_view(),name="country-list"),
     #changing password
     path("change-password", ChangePasswordView.as_view()),
     # register and login
-    path("register", UserCreate.as_view()),
+    path("register", UserCreate.as_view(),name="register"),
     path("login", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("refresh-token", TokenRefreshView.as_view(), name="token_refresh"),
 ]

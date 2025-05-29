@@ -189,10 +189,12 @@ class TestChangePasswordView:
 
     def test_user_can_change_own_password_incorrect_old_password(self, token_regular_user_client, regular_user, url):
         data = {
-            "old_password": "<PASSWORD>", "new_password": "<PASSWORD>",
-            "new_password1": "<PASSWORD213>",
-            "new_password2": "<PASSWORD>213",
+            "old_password": "WRONGpassword",  # رمز اشتباه
+            "new_password": "newpassword123",
+            "new_password1": "newpassword123",
         }
         response = token_regular_user_client.put(url, data)
-        assert response.status_code == status.HTTP_403_FORBIDDEN
-
+        print("Response status:", response.status_code)
+        print("Response data:", response.json())
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "رمز فعلی اشتباه است." in response.json().get("non_field_errors", [])

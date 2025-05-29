@@ -5,6 +5,7 @@ from accounts.models import User,Address,City,Country
 from catalog.models import Shop, Category, Product
 from orders.models import Order
 
+# CREATING TEST MODELS FOR ALL AF THE MODELS IN FIXTURE
 
 @pytest.fixture
 def user(db):
@@ -75,6 +76,7 @@ def api_client():
     client = APIClient()
     return client
 
+# CREATING USERS [ADMIN USER, REGULAR USER , ANOTHER USER]
 
 @pytest.fixture
 def admin_user(django_user_model):
@@ -104,6 +106,8 @@ def another_user(db):
         is_staff=False,
         is_superuser=False
     )
+
+# CREATING  TOKENS [ADMIN TOKEN, REGULAR USER TOKEN, ANOTHER USER TOKEN]
 
 @pytest.fixture
 def token_admin_client(admin_user):

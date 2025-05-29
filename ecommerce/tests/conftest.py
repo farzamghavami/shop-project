@@ -76,7 +76,7 @@ def api_client():
     client = APIClient()
     return client
 
-# CREATING USERS [ADMIN USER, REGULAR USER , ANOTHER USER]
+# CREATING TEST USERS [ADMIN USER, REGULAR USER , ANOTHER USER]
 
 @pytest.fixture
 def admin_user(django_user_model):
@@ -107,7 +107,7 @@ def another_user(db):
         is_superuser=False
     )
 
-# CREATING  TOKENS [ADMIN TOKEN, REGULAR USER TOKEN, ANOTHER USER TOKEN]
+# CREATING TEST TOKENS [ADMIN TOKEN, REGULAR USER TOKEN, ANOTHER USER TOKEN]
 
 @pytest.fixture
 def token_admin_client(admin_user):

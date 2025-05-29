@@ -8,7 +8,9 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from tests.conftest import token_admin_client, regular_user
 
-
+"""
+TEST USER LIST
+"""
 @pytest.mark.django_db
 class TestUserListView:
     @pytest.fixture
@@ -24,6 +26,10 @@ class TestUserListView:
         response = token_another_user_client.get(user_list_url)
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
+
+"""
+TEST USER DETAIL
+"""
 @pytest.mark.django_db
 class TestUserDetailView:
     @pytest.fixture
@@ -44,6 +50,11 @@ class TestUserDetailView:
     def test_user_cannot_view_other_user_detail(self, url, token_another_user_client):
         response = token_another_user_client.get(url)
         assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+"""
+TEST USER UPDATE
+"""
 
 @pytest.mark.django_db
 class TestUserUpdateView:
@@ -67,6 +78,10 @@ class TestUserUpdateView:
         data = {"username": "UpdatedName"}
         response = token_another_user_client.put(url, data)
         assert response.status_code == status.HTTP_403_FORBIDDEN
+
+"""
+TEST USER DELETE
+"""
 
 @pytest.mark.django_db
 class TestUserDeleteView:

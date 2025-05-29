@@ -93,7 +93,7 @@ def admin_user(django_user_model):
 @pytest.fixture
 def regular_user(django_user_model):
     return django_user_model.objects.create_user(
-        username="user", email="user@test.com", password="user123", password2="user123", phone="1231535"
+        username="user", email="user@test.com", password1="user123", password2="user123", phone="1231535"
     )
 
 @pytest.fixture

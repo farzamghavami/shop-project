@@ -223,7 +223,7 @@ class ChangePasswordView(generics.GenericAPIView):
     change password with valid password
     """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsOwnerOrAdmin]
     serializer_class = ChangePasswordSerializer
 
     def put(self, request):

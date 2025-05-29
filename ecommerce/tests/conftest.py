@@ -93,7 +93,10 @@ def admin_user(django_user_model):
 @pytest.fixture
 def regular_user(django_user_model):
     return django_user_model.objects.create_user(
-        username="user", email="user@test.com", password1="user123", password2="user123", phone="1231535"
+        username="user",
+        email="user@test.com",
+        password="userpass123",  # ← اصلاح این خط
+        phone="1231535"
     )
 
 @pytest.fixture
@@ -129,3 +132,12 @@ def token_another_user_client(another_user):
     token = AccessToken.for_user(another_user)
     client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
     return client
+
+@pytest.fixture
+def address_regular_user(db,regular_user,city):
+    return Address.objects.create(
+        user=regular_user,
+        city=city,
+        street="test",
+        zip_code="123456",
+    )

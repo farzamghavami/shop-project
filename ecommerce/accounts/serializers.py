@@ -49,13 +49,18 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def validate(self, attrs):
-        if attrs.get("password1") != attrs.get("password2"):
-            raise serializers.ValidationError("Passwords must match")
+        password1 = attrs.get("password1")
+        password2 = attrs.get("password2")
 
-        try:
-            validate_password(attrs.get("password1"))
-        except exceptions.ValidationError as e:
-            raise serializers.ValidationError({"password1": list(e.messages)})
+        if password1 or password2:
+            if password1 != password2:
+                raise serializers.ValidationError("Passwords must match")
+
+            try:
+                validate_password(password1)
+            except exceptions.ValidationError as e:
+                raise serializers.ValidationError({"password1": list(e.messages)})
+
         return attrs
 
     """for hashing password"""

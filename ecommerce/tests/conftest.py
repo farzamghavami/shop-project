@@ -1,4 +1,6 @@
 import pytest
+from rest_framework.test import APIClient
+from rest_framework_simplejwt.tokens import AccessToken
 from accounts.models import User,Address,City,Country
 from catalog.models import Shop, Category, Product
 from orders.models import Order
@@ -67,3 +69,59 @@ def order(db,shop,user,address):
         address=address,
         total_price=100,
     )
+
+@pytest.fixture
+def api_client():
+    client = APIClient()
+    return client
+
+
+@pytest.fixture
+def admin_user(django_user_model):
+    return django_user_model.objects.create_user(
+        username="root",
+        email="rooot@gmail.com",
+        password1="root",
+        password2="root",
+        phone="123153533",
+        is_staff=True,
+        is_superuser=True
+    )
+
+@pytest.fixture
+def regular_user(django_user_model):
+    return django_user_model.objects.create_user(
+        username="user", email="user@test.com", password="user123", password2="user123", phone="1231535"
+    )
+
+@pytest.fixture
+def another_user(db):
+    return User.objects.create_user(
+        email='another@example.com',
+        username='anotheruser',
+        password1='anotherpass123',
+        password2='anotherpass123',
+        is_staff=False,
+        is_superuser=False
+    )
+
+@pytest.fixture
+def token_admin_client(admin_user):
+    client = APIClient()
+    token = AccessToken.for_user(admin_user)
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+    return client
+
+@pytest.fixture
+def token_regular_user_client(regular_user):
+    client = APIClient()
+    token = AccessToken.for_user(regular_user)
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+    return client
+
+@pytest.fixture
+def token_another_user_client(another_user):
+    client = APIClient()
+    token = AccessToken.for_user(another_user)
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+    return client

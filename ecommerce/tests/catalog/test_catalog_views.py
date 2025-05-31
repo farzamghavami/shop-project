@@ -244,6 +244,7 @@ class TestShopUpdateView:
         response = token_seller2_user_client.put(url, data)
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
+
 @pytest.mark.django_db
 class TestShopDeleteView:
     @pytest.fixture
@@ -265,6 +266,7 @@ class TestShopDeleteView:
     def test_another_seller_can_delete_shop(self, token_seller2_user_client, url, shop_seller_user):
         response = token_seller2_user_client.delete(url)
         assert response.status_code == status.HTTP_403_FORBIDDEN
+
 
 @pytest.mark.django_db
 class TestCategoryListView:

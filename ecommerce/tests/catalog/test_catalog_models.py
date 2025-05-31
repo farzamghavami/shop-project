@@ -1,28 +1,28 @@
 import pytest
 from django.db import IntegrityError
 from catalog.models import *
+from tests.conftest import category
+
 User = get_user_model()
 
 
 @pytest.mark.django_db
 class TestCategoryModel:
-    def test_create_category_no_parent(self):
-        category = Category.objects.create(
-            name = "lavazem electronici",
-        )
+    def test_create_category_no_parent(self,category):
+        category = category
         assert category.name == "lavazem electronici"
         assert category.parent is None
 
-    def test_create_category_parent(self):
-        parent = Category.objects.create(name = "lavazem electronici")
+    def test_create_category_parent(self,category):
+        parent = category
         child = Category.objects.create(name = "mobile", parent=parent)
         assert child.parent == parent
         assert child.name == "mobile"
         assert parent.name == "lavazem electronici"
         assert parent.children.first() == child
 
-    def test_category_str_method(self):
-        parent = Category.objects.create(name = "lavazem electronici")
+    def test_category_str_method(self,category):
+        parent = category
         child = Category.objects.create(name = "mobile", parent=parent)
         sub_child = Category.objects.create(name = "iphone", parent=child)
 
@@ -43,15 +43,8 @@ class TestShopModel:
 @pytest.mark.django_db
 class TestProductModel:
 
-    def test_create_product_no_parent(self,shop,category):
-        product = Product.objects.create(
-            shop = shop,
-            category = category,
-            name = "test",
-            description = "test",
-            price = 100,
-            is_active = True,
-        )
+    def test_create_product_no_parent(self,shop,category,product):
+        product = product
         assert product.shop == shop
         assert product.category == category
         assert product.name == "test"

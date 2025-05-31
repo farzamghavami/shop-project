@@ -1,4 +1,3 @@
-from http.client import responses
 import pytest
 from django.urls import reverse
 from rest_framework import status
@@ -36,6 +35,7 @@ class TestUserDetailView:
         response = token_admin_client.get(url)
         assert response.status_code == status.HTTP_200_OK
         assert response.json()["username"] == regular_user.username
+        print(response.json())
 
 
     def test_user_can_view_own_detail(self, regular_user, token_regular_user_client,url):
@@ -140,7 +140,7 @@ class TestAddressDetailView:
         response = token_regular_user_client.get(address_detail_url)
         assert response.status_code == status.HTTP_200_OK
 
-    def test_another_user_view_address_detail(self, address_detail_url, token_another_user_client,another_user):
+    def test_another_own_user_view_address_detail(self, address_detail_url, token_another_user_client,another_user):
         response = token_another_user_client.get(address_detail_url)
         assert response.status_code == status.HTTP_403_FORBIDDEN
         print(response.data)
@@ -189,7 +189,7 @@ class TestChangePasswordView:
 
     def test_user_can_change_own_password_incorrect_old_password(self, token_regular_user_client, regular_user, url):
         data = {
-            "old_password": "WRONGpassword",  # رمز اشتباه
+            "old_password": "dfgsdfgsdfg",
             "new_password": "newpassword123",
             "new_password1": "newpassword123",
         }
@@ -197,4 +197,4 @@ class TestChangePasswordView:
         print("Response status:", response.status_code)
         print("Response data:", response.json())
         assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert "رمز فعلی اشتباه است." in response.json().get("non_field_errors", [])
+

@@ -7,15 +7,14 @@ class TestUserModel():
         user = user
         assert user.username == 'testuser'
         assert user.email == 'test@test.com'
-        assert user.password1 == '<PASSWORD>'
-        assert user.password2 == '<PASSWORD>'
         assert user.phone == '1231535'
+        assert user.check_password('test1234/') is True
+
 
 
 
 @pytest.mark.django_db
 class TestAddressModel:
-
     def test_create_address_valid(self,address,user,city):
 
         address =address
@@ -29,6 +28,7 @@ class TestCityModel:
     def test_create_city_valid(self,city,country):
         city = city
         assert city.name == "test"
+        assert city.country == country
 
 @pytest.mark.django_db
 class TestCountryModel:

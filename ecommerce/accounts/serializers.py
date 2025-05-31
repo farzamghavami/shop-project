@@ -26,6 +26,8 @@ class CitySerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    password1 = serializers.CharField(write_only=True)
+    password2 = serializers.CharField(write_only=True)
     class Meta:
 
         model = User
@@ -41,8 +43,6 @@ class UserSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
         extra_kwargs = {
-            "password1": {"write_only": True},
-            "password2": {"write_only": True},
             "role": {"read_only": True},
             "created_at": {"read_only": True},
             "updated_at": {"read_only": True},
@@ -66,7 +66,12 @@ class UserSerializer(serializers.ModelSerializer):
     """for hashing password"""
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        password = validated_data.pop("password1")
+        validated_data.pop("password2")
+
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
         return user
 
     # """to responce just id and username"""

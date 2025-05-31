@@ -9,11 +9,10 @@ from orders.models import Order
 
 @pytest.fixture
 def user(db):
-    return User.objects.create(
+    return User.objects.create_user(
         username='testuser',
         email='test@test.com',
-        password1='<PASSWORD>',
-        password2='<PASSWORD>',
+        password='test1234/',
         phone='1231535',
     )
 
@@ -49,7 +48,7 @@ def shop(db,user,address):
     )
 @pytest.fixture
 def category(db):
-    return Category.objects.create(name="test")
+    return Category.objects.create(name="lavazem electronici")
 
 @pytest.fixture
 def product(db,shop,category):
@@ -83,8 +82,7 @@ def admin_user(django_user_model):
     return django_user_model.objects.create_user(
         username="root",
         email="rooot@gmail.com",
-        password1="root",
-        password2="root",
+        password="root1234/",
         phone="123153533",
         is_staff=True,
         is_superuser=True
@@ -104,8 +102,7 @@ def another_user(db):
     return User.objects.create_user(
         email='another@example.com',
         username='anotheruser',
-        password1='anotherpass123',
-        password2='anotherpass123',
+        password='anotherpass123',
         is_staff=False,
         is_superuser=False
     )

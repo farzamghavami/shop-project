@@ -21,9 +21,11 @@ from .views import (
     WishListDetail,
 )
 
+app_name = "catalog"
+
 urlpatterns = [
-    path("product", ProductList.as_view()),
-    path("product/<int:pk>", ProductDetail.as_view()),
+    path("product", ProductList.as_view(), name="product-list"),
+    path("product/<int:pk>", ProductDetail.as_view(), name="product-detail"),
     path("product/create", ProductCreate.as_view()),
     path("product/update/<int:pk>", ProductUpdate.as_view()),
     path("product/delete/<int:pk>", ProductDelete.as_view()),

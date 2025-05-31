@@ -61,6 +61,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "is_active",
             "image_url",
         ]
+        extra_kwargs = {"is_active": {"read_only": True}}
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)

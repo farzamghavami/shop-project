@@ -41,7 +41,7 @@ class Product(Time):
     description = models.TextField()
     price = models.DecimalField(decimal_places=2, max_digits=10)
     is_active = models.BooleanField(default=True)
-    image_url = models.CharField(max_length=200)
+    image_url = models.CharField(max_length=200,null=True,blank=True)
 
 
 class Wishlist(Time):

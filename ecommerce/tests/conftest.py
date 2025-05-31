@@ -94,19 +94,49 @@ def regular_user(django_user_model):
         username="user",
         email="user@test.com",
         password="userpass123",  # ← اصلاح این خط
-        phone="1231535"
+        phone="1231535444"
     )
 
 @pytest.fixture
-def another_user(db):
+def another_user(django_user_model):
     return User.objects.create_user(
         email='another@example.com',
         username='anotheruser',
         password='anotherpass123',
+        phone='123153544124',
         is_staff=False,
         is_superuser=False
     )
+@pytest.fixture
+def seller_user():
+    return User.objects.create_user(
+        username="user",
+        email="user@test.com",
+        password="userpass123",  # ← اصلاح این خط
+        phone="1231535151",
+        role = "SELLER",
+    )
 
+@pytest.fixture
+def seller2_user():
+    return User.objects.create_user(
+        username="user2",
+        email="user2@test.com",
+        password="userpass123",
+        phone="12315351251",
+        role = "SELLER",
+    )
+
+@pytest.fixture
+def owner_user():
+    return User.objects.create_user(
+        email='another@example.com',
+        username='anotheruser',
+        password='anotherpass123',
+        phone='12535441214',
+        is_staff=False,
+        is_superuser=False
+    )
 # CREATING TEST TOKENS [ADMIN TOKEN, REGULAR USER TOKEN, ANOTHER USER TOKEN]
 
 @pytest.fixture
@@ -131,10 +161,47 @@ def token_another_user_client(another_user):
     return client
 
 @pytest.fixture
+def token_seller_user_client(seller_user):
+    client = APIClient()
+    token = AccessToken.for_user(seller_user)
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+    return client
+
+@pytest.fixture
+def token_seller2_user_client(seller2_user):
+    client = APIClient()
+    token = AccessToken.for_user(seller2_user)
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+    return client
+
+
+
+@pytest.fixture
 def address_regular_user(db,regular_user,city):
     return Address.objects.create(
         user=regular_user,
         city=city,
         street="test",
         zip_code="123456",
+    )
+
+@pytest.fixture
+def shop_seller_user(db,seller_user,address):
+    return Shop.objects.create(
+        status="PENDING",
+        owner=seller_user,
+        name="test",
+        address=address,
+        is_active=True,
+    )
+
+@pytest.fixture
+def product_seller_user(db,seller_user,shop_seller_user,category):
+    return Product.objects.create(
+        shop=shop_seller_user,
+        category=category,
+        name="test",
+        description="test",
+        price=100,
+        is_active=True,
     )

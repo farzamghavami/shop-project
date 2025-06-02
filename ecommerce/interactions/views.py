@@ -8,6 +8,7 @@ from .serializers import CommentSerializer, RateSerializer
 from core.permissions import IsSellerOrAdmin, IsOwnerOrAdmin
 from accounts.views import get_current_user_from_token
 from drf_spectacular.utils import extend_schema
+from interactions.models import Product
 
 
 @extend_schema(tags=["comments"])
@@ -53,7 +54,7 @@ class CommentDetailView(APIView):
     serializer_class = CommentSerializer
 
     def get(self, request, pk):
-        comment = get_object_or_404(parent=None, pk=pk)
+        comment = get_object_or_404(Comment, pk=pk)
         serializer = self.serializer_class(comment)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -69,8 +70,8 @@ class CommentUpdateView(APIView):
 
     def put(self, request, pk):
         comment = get_object_or_404(Comment, pk=pk, parent=None)
-        self.check_object_permissions(comment, request.user)
-        serializer = self.serializer_class(comment, data=request.data)
+        self.check_object_permissions(request,comment)
+        serializer = self.serializer_class(comment, data=request.data,partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -88,7 +89,7 @@ class CommentDeleteView(APIView):
 
     def delete(self, request, pk):
         comment = get_object_or_404(Comment, pk=pk)
-        self.check_object_permissions(comment, request.user)
+        self.check_object_permissions(request,comment)
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -129,18 +130,20 @@ class RateCreateView(APIView):
         except ValueError:
             return Response({"detail": "مقادیر نامعتبر هستند."}, status=400)
 
+        # بررسی وجود محصول
+        product = get_object_or_404(Product, id=product_id)
+
         # جلوگیری از ثبت تکراری
-        if Rate.objects.filter(user=user, product_id=product_id).exists():
+        if Rate.objects.filter(user=user, product=product).exists():
             return Response({"detail": "شما قبلاً به این محصول امتیاز داده‌اید."}, status=400)
 
         # ذخیره امتیاز
         data = {
-            "user": user.id,
-            "product": product_id,
-            "score": score
+            "score": score,
+            "product": product.id,
         }
         srz_data = self.serializer_class(data=data)
         if srz_data.is_valid():
-            srz_data.save(user=user)  # کاربر رو دستی پاس می‌دیم چون read_only هست
+            srz_data.save(user=user, product=product)  # مقداردهی دستی به فیلدهای read_only
             return Response(srz_data.data, status=201)
         return Response(srz_data.errors, status=400)

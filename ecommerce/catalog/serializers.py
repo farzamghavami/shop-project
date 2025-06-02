@@ -80,9 +80,13 @@ class WishListSerializer(serializers.ModelSerializer):
             "id",
             "user",
             "product",
+            "is_active",
+            "created_at",
+            "updated_at",
         ]
-        extra_kwargs = {"user": {"read_only": True}}
+        extra_kwargs = {"user": {"read_only": True},"created_at": {"read_only": True},"updated_at": {"read_only": True}}
     def to_representation(self, instance):
         rep = super().to_representation(instance)
         rep["user"] = UserSerializer(instance.user).data
         rep["product"] = ProductSerializer(instance.product).data
+        return rep

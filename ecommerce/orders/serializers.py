@@ -1,11 +1,15 @@
 from rest_framework import serializers
+
+from catalog.models import Product
 from .models import Order, OrderItem, Delivery
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+    order = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = OrderItem
-        fields = ["product", "count", "row_price"]
+        fields = ["product", "count", "row_price", "order"]
         extra_kwargs = {"row_price": {"read_only": True}}
 
 

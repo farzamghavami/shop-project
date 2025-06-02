@@ -17,6 +17,7 @@ class Category(models.Model):
             full_path.append(k.name)
             k = k.parent
         return " / ".join(full_path[::-1])
+    is_active = models.BooleanField(default=True)
 
 
 class Shop(Time):
@@ -49,6 +50,7 @@ class Wishlist(Time):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="wishlists"
     )
+    is_active = models.BooleanField(default=True)
 
     #avoid repetition
     class Meta:

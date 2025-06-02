@@ -26,8 +26,9 @@ class OrderList(APIView):
     serializer_class = OrderSerializer
 
     def get(self, request):
-        queryset = Order.objects.all()
-        serializers = self.serializer_class(queryset, many=True)
+        orders = Order.objects.all()
+        self.check_object_permissions(request, orders)
+        serializers = self.serializer_class(orders, many=True)
         return Response(serializers.data)
 
 
@@ -59,7 +60,6 @@ class OrderCreate(APIView):
     def post(self, request):
         currentUser = get_current_user_from_token(request)
         serializers = self.serializer_class(data=request.data)
-        self.check_object_permissions(request, serializers)
         if serializers.is_valid():
             serializers.save(user=currentUser)
             return Response(serializers.data, status=status.HTTP_201_CREATED)
@@ -108,12 +108,13 @@ class OrderItemList(APIView):
     list all order items
     """
 
-    permission_classes = [IsOwnerOrAdmin]
+    permission_classes = [IsAdminUser]
     serializer_class = OrderItemSerializer
 
     def get(self, request):
         queryset = OrderItem.objects.all()
-        self.check_object_permissions(request, queryset)
+        for obj in queryset:
+            self.check_object_permissions(request, obj)
         srz_data = self.serializer_class(queryset, many=True)
         return Response(srz_data.data)
 
@@ -192,7 +193,7 @@ class DeliveryDetail(APIView):
 
     def get(self, request, pk):
         queryset = get_object_or_404(Delivery, pk=pk)
-        srz_data = self.serializer_class(queryset, many=True)
+        srz_data = self.serializer_class(queryset)
         return Response(srz_data.data)
 
 @extend_schema(tags=["Delivery"])
@@ -201,7 +202,7 @@ class DeliveryCreate(APIView):
     create a new delivery
     """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
     serializer_class = DeliverySerializer
 
     def post(self, request):
@@ -217,7 +218,7 @@ class DeliveryDelete(APIView):
     delete an delivery
     """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
     serializer_class = DeliverySerializer
 
     def delete(self, request, pk):

@@ -8,6 +8,7 @@ from .views import (
     RateCreateView,
     RatingDetailView,
 )
+app_name = "interactions"
 
 urlpatterns = [
     path("comments/", CommentListView.as_view(), name="comment-list"),
@@ -19,6 +20,6 @@ urlpatterns = [
     path(
         "comments/delete/<int:pk>", CommentDeleteView.as_view(), name="comment-delete"
     ),
-    path("rate/create", RateCreateView.as_view(), name="rating-list"),
+    path("rate/create", RateCreateView.as_view(), name="rate-create"),
     path("rate/<int:pk>", RatingDetailView.as_view(), name="rating-detail"),
 ]

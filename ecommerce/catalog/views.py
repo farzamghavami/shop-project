@@ -266,7 +266,7 @@ class WishlistList(APIView):
     list all wishlist
     """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsOwnerOrAdmin]
     serializer_class = WishListSerializer
 
     def get(self, request):
@@ -326,10 +326,9 @@ class WishlistDelete(APIView):
     serializer_class = WishListSerializer
 
     def delete(self, request, pk):
-        current_user = get_current_user_from_token(request)
         wishlist = get_object_or_404(Wishlist, pk=pk)
         self.check_object_permissions(request, wishlist)
         wishlist.is_active = False
-        wishlist.save(user=current_user)
+        wishlist.save()
         serializer = self.serializer_class(wishlist)
         return Response(serializer.data, status=status.HTTP_200_OK)

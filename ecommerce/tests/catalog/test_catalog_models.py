@@ -8,11 +8,13 @@ User = get_user_model()
 
 @pytest.mark.django_db
 class TestCategoryModel:
+    """test category model"""
+    #category with no parent
     def test_create_category_no_parent(self,category):
         category = category
         assert category.name == "lavazem electronici"
         assert category.parent is None
-
+    #category with parent
     def test_create_category_parent(self,category):
         parent = category
         child = Category.objects.create(name = "mobile", parent=parent)
@@ -20,7 +22,7 @@ class TestCategoryModel:
         assert child.name == "mobile"
         assert parent.name == "lavazem electronici"
         assert parent.children.first() == child
-
+    #test category str
     def test_category_str_method(self,category):
         parent = category
         child = Category.objects.create(name = "mobile", parent=parent)
@@ -30,10 +32,11 @@ class TestCategoryModel:
 
 @pytest.mark.django_db
 class TestShopModel:
+    """test shop model"""
 
-    def test_create_shop(self,shop,user,address):
+    def test_create_shop(self,shop,regular_user,address):
         shop = shop
-        assert shop.owner == user
+        assert shop.owner == regular_user
         assert shop.name == "test"
         assert shop.address == address
         assert shop.status == "PENDING"
@@ -42,7 +45,7 @@ class TestShopModel:
 
 @pytest.mark.django_db
 class TestProductModel:
-
+    """test product model"""
     def test_create_product_no_parent(self,shop,category,product):
         product = product
         assert product.shop == shop
@@ -54,9 +57,10 @@ class TestProductModel:
 
 @pytest.mark.django_db
 class TestWishListModel:
-    def test_create_wishlist(self,user,product):
-        wishlist = Wishlist.objects.create(user = user, product = product)
-        assert wishlist.user == user
+    """test wishlist model"""
+    def test_create_wishlist(self,regular_user,product):
+        wishlist = Wishlist.objects.create(user = regular_user, product = product)
+        assert wishlist.user == regular_user
         assert wishlist.product == product
 
     def test_wishlist_unique_together(self, user, product):

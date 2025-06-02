@@ -5,12 +5,17 @@ from interactions.models import Rate,Comment
 
 @pytest.mark.django_db
 class TestRateModel:
+    """
+    test rate model
+    """
+
     def test_rate_create(self, user, product):
         rate = Rate.objects.create(user = user, product = product,score=3)
         assert rate.user == user
         assert rate.product == product
         assert rate.score == 3
 
+    #test unique
     def test_unique_together_constraint(self, user, product):
         Rate.objects.create(user=user, product=product, score=3)
         with pytest.raises(IntegrityError):
@@ -19,6 +24,10 @@ class TestRateModel:
 
 @pytest.mark.django_db
 class TestCommentModel:
+    """
+    test comment model
+    """
+
     def test_comment_create(self, user, product):
         comment = Comment.objects.create(user = user, product = product, text = "this is a test comment")
         assert comment.user == user
@@ -26,6 +35,7 @@ class TestCommentModel:
         assert comment.text == "this is a test comment"
         assert comment.parent is None
 
+    #test replay
     def test_create_replay_comment(self, user, product):
         parent_comment = Comment.objects.create(
             user = user,

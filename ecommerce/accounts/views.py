@@ -25,7 +25,7 @@ from rest_framework.generics import ListAPIView
 @extend_schema(tags=["Users"])
 class UserList(ListAPIView):
     """
-    users list
+    user list
     """
     permission_classes = [IsAdminUser]
     serializer_class = UserSerializer

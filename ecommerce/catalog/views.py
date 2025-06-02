@@ -14,6 +14,8 @@ from accounts.views import get_current_user_from_token
 from core.permissions import *
 from rest_framework.generics import ListAPIView
 from drf_spectacular.utils import extend_schema
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter, SearchFilter
 
 @extend_schema(tags=["products"])
 class ProductList(ListAPIView):
@@ -24,6 +26,14 @@ class ProductList(ListAPIView):
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated]
     queryset = Product.objects.all()
+
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+
+    search_fields = [ 'description','name']
+
+    ordering_fields = ["created_at", "updated_at"]
+
+    filterset_fields = ["category", "is_active", "created_at", "updated_at"]
 
 
 @extend_schema(tags=["products"])

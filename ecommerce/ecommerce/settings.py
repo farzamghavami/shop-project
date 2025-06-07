@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "django_filters",
     "drf_yasg",
+    "invoices.apps.InvoicesConfig",
     ]
 
 MIDDLEWARE = [

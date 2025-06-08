@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models.fields import FloatField
-from accounts.models import User, Address,Time
+from accounts.models import User, Address, Time
 from catalog.models import Product, Shop
 
 

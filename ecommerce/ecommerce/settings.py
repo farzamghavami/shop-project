@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+
 from email.policy import default
 from pathlib import Path
 from datetime import timedelta
@@ -22,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-REPLACE_THIS_WITH_A_REAL_SECRET_KEY'
+SECRET_KEY = "django-insecure-REPLACE_THIS_WITH_A_REAL_SECRET_KEY"
 DEBUG = True
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -49,7 +50,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "django_filters",
     "drf_yasg",
-    ]
+]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -85,11 +86,16 @@ WSGI_APPLICATION = "ecommerce.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ecommerce',
+        'USER': 'farzam',
+        'PASSWORD': '1111',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -142,13 +148,13 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",  # اضافه کردن Browsable API
     ],
-    'DEFAULT_FILTER_BACKENDS': [
-        'django_filters.rest_framework.DjangoFilterBackend',
-        'rest_framework.filters.SearchFilter',
-        'rest_framework.filters.OrderingFilter',
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.SearchFilter",
+        "rest_framework.filters.OrderingFilter",
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
 }
 
 SIMPLE_JWT = {
@@ -157,16 +163,16 @@ SIMPLE_JWT = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'shop-project',
-    'DESCRIPTION': 'مستندات کامل API پروژه فروشگاه',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
-    'COMPONENT_SPLIT_REQUEST': True,  # درخواست و پاسخ جدا نمایش داده شود
-    'SCHEMA_PATH_PREFIX': '/api/v[0-9]',  # در صورت وجود نسخه‌بندی
+    "TITLE": "shop-project",
+    "DESCRIPTION": "مستندات کامل API پروژه فروشگاه",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,  # درخواست و پاسخ جدا نمایش داده شود
+    "SCHEMA_PATH_PREFIX": "/api/v[0-9]",  # در صورت وجود نسخه‌بندی
     # سایر تنظیمات...
-    'SORT_OPERATION_PARAMETERS': True,  # مرتب‌سازی پارامترهای هر عملیات
-    'SORT_OPERATIONS': True,  # مرتب‌سازی خود عملیات‌ها
-    'SORT_PATHS': True,  # مرتب‌سازی مسیرهای URL
+    "SORT_OPERATION_PARAMETERS": True,  # مرتب‌سازی پارامترهای هر عملیات
+    "SORT_OPERATIONS": True,  # مرتب‌سازی خود عملیات‌ها
+    "SORT_PATHS": True,  # مرتب‌سازی مسیرهای URL
     # 'TAGS': [
     #     {'name': 'Users', 'description': 'عملیات مربوط به کاربران'},
     #     {'name': 'Auth', 'description': 'احراز هویت و توکن'},

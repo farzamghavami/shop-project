@@ -70,8 +70,8 @@ class CommentUpdateView(APIView):
 
     def put(self, request, pk):
         comment = get_object_or_404(Comment, pk=pk, parent=None)
-        self.check_object_permissions(request,comment)
-        serializer = self.serializer_class(comment, data=request.data,partial=True)
+        self.check_object_permissions(request, comment)
+        serializer = self.serializer_class(comment, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -89,7 +89,7 @@ class CommentDeleteView(APIView):
 
     def delete(self, request, pk):
         comment = get_object_or_404(Comment, pk=pk)
-        self.check_object_permissions(request,comment)
+        self.check_object_permissions(request, comment)
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -121,8 +121,10 @@ class RateCreateView(APIView):
 
         # بررسی مقدارهای ورودی
         if not product_id or not score:
-            return Response({"detail": "فیلدهای محصول و امتیاز الزامی هستند."},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "فیلدهای محصول و امتیاز الزامی هستند."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         try:
             product_id = int(product_id)
@@ -135,7 +137,9 @@ class RateCreateView(APIView):
 
         # جلوگیری از ثبت تکراری
         if Rate.objects.filter(user=user, product=product).exists():
-            return Response({"detail": "شما قبلاً به این محصول امتیاز داده‌اید."}, status=400)
+            return Response(
+                {"detail": "شما قبلاً به این محصول امتیاز داده‌اید."}, status=400
+            )
 
         # ذخیره امتیاز
         data = {
@@ -144,6 +148,8 @@ class RateCreateView(APIView):
         }
         srz_data = self.serializer_class(data=data)
         if srz_data.is_valid():
-            srz_data.save(user=user, product=product)  # مقداردهی دستی به فیلدهای read_only
+            srz_data.save(
+                user=user, product=product
+            )  # مقداردهی دستی به فیلدهای read_only
             return Response(srz_data.data, status=201)
         return Response(srz_data.errors, status=400)

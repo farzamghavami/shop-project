@@ -16,12 +16,10 @@ from rest_framework.generics import ListAPIView
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
+from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiResponse
 
-@extend_schema(tags=["products"])
+
 class ProductList(ListAPIView):
-    """
-    list all products
-    """
 
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated]
@@ -29,7 +27,7 @@ class ProductList(ListAPIView):
 
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
 
-    search_fields = [ 'description','name']
+    search_fields = ["description", "name"]
 
     ordering_fields = ["created_at", "updated_at"]
 
@@ -71,7 +69,7 @@ class ProductCreate(APIView):
 @extend_schema(tags=["products"])
 class ProductUpdate(APIView):
     """
-    update single product
+    Update single product
     """
 
     permission_classes = [IsOwnerOrAdmin]
@@ -135,7 +133,7 @@ class ShopDetail(APIView):
 @extend_schema(tags=["shops"])
 class ShopCreate(APIView):
     """
-    create new shop
+    create shop
     """
 
     permission_classes = [IsSellerOrAdmin]
@@ -270,6 +268,7 @@ class CategoryDelete(APIView):
         serializer = self.serializer_class(category)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 @extend_schema(tags=["wishlist"])
 class WishlistList(APIView):
     """
@@ -290,6 +289,7 @@ class WishlistCreate(APIView):
     """
     Create new wishlist
     """
+
     permission_classes = [IsAuthenticated]
     serializer_class = WishListSerializer
 
@@ -302,10 +302,12 @@ class WishlistCreate(APIView):
             product_id = queryset.validated_data.get("product").id
 
             # بررسی وجود قبلی
-            if Wishlist.objects.filter(user=current_user, product_id=product_id).exists():
+            if Wishlist.objects.filter(
+                user=current_user, product_id=product_id
+            ).exists():
                 return Response(
                     {"detail": "این محصول قبلاً به علاقه‌مندی‌ها اضافه شده است."},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             # ذخیره‌سازی در صورت عدم وجود
@@ -313,6 +315,7 @@ class WishlistCreate(APIView):
             return Response(queryset.data, status=status.HTTP_201_CREATED)
 
         return Response(queryset.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class WishListDetail(APIView):
 
@@ -323,7 +326,6 @@ class WishListDetail(APIView):
         wishlist = get_object_or_404(Wishlist, pk=pk)
         srz_data = self.serializer_class(wishlist)
         return Response(srz_data.data)
-
 
 
 @extend_schema(tags=["wishlist"])

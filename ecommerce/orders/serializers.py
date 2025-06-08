@@ -7,6 +7,7 @@ from .models import Order, OrderItem, Delivery
 class OrderItemSerializer(serializers.ModelSerializer):
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
     order = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = OrderItem
         fields = ["product", "count", "row_price", "order"]

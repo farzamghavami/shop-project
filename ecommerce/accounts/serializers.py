@@ -28,6 +28,7 @@ class CitySerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
+
     class Meta:
 
         model = User
@@ -84,7 +85,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class AddressSerializer(serializers.ModelSerializer):
-    #using serializers of user and city for mor information like name and id of city and user fild fore get method
+    # using serializers of user and city for mor information like name and id of city and user fild fore get method
     city = serializers.SerializerMethodField()
     user = serializers.SerializerMethodField()
 
@@ -103,19 +104,18 @@ class AddressSerializer(serializers.ModelSerializer):
         extra_kwargs = {"user": {"read_only": True}}
 
     """for getting more information about user and city(id,name)"""
+
     def get_city(self, obj):
 
-        return {
-            "id": obj.city.id,
-            "name": obj.city.name
-        }
+        return {"id": obj.city.id, "name": obj.city.name}
 
     def get_user(self, obj):
 
         return {
             "id": obj.user.id,
-            "name": obj.user.username  # یا هر فیلدی که به عنوان نام کاربر دارید
+            "name": obj.user.username,  # یا هر فیلدی که به عنوان نام کاربر دارید
         }
+
 
 class ChangePasswordSerializer(serializers.Serializer):
     """changing password from user"""

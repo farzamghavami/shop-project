@@ -30,7 +30,7 @@ class IsSellerOrAdmin(BasePermission):
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
-    Only allow object owner to edit; anyone can read.
+    Only allow owners to edit; anyone can read.
     """
 
     def has_object_permission(self, request, view, obj):

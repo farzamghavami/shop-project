@@ -27,8 +27,12 @@ urlpatterns = [
     path("order/delete/<int:pk>", OrderDelete.as_view(), name="order-delete"),
     path("orderitem", OrderItemList.as_view(), name="orderitem-list"),
     path("orderitem/<int:pk>", OrderItemDetail.as_view(), name="orderitem-detail"),
-    path("orderitem/update/<int:pk>", OrderItemUpdate.as_view(), name="orderitem-update"),
-    path("orderitem/delete/<int:pk>", OrderItemDelete.as_view(), name="orderitem-delete"),
+    path(
+        "orderitem/update/<int:pk>", OrderItemUpdate.as_view(), name="orderitem-update"
+    ),
+    path(
+        "orderitem/delete/<int:pk>", OrderItemDelete.as_view(), name="orderitem-delete"
+    ),
     path("delivery", DeliveryList.as_view(), name="delivery-list"),
     path("delivery/<int:pk>", DeliveryDetail.as_view(), name="delivery-detail"),
     path("delivery/create", DeliveryCreate.as_view(), name="delivery-create"),

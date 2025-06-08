@@ -27,14 +27,20 @@ class UserList(ListAPIView):
     """
     user list
     """
+
     permission_classes = [IsAdminUser]
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['is_active', 'is_staff']
-    search_fields = ['username', 'email', 'first_name', 'last_name']
-    ordering_fields = ['username', 'email', 'date_joined']
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    filterset_fields = ["is_active", "is_staff"]
+    search_fields = ["username", "email", "first_name", "last_name"]
+    ordering_fields = ["username", "email", "date_joined"]
+
 
 @extend_schema(tags=["Users"])
 class UserDetail(APIView):
@@ -51,6 +57,7 @@ class UserDetail(APIView):
         srz_data = self.serializer_class(user)
         return Response(srz_data.data, status=status.HTTP_200_OK)
 
+
 @extend_schema(tags=["Users"])
 class UserCreate(APIView):
     """
@@ -65,6 +72,7 @@ class UserCreate(APIView):
             srz_data.save()
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @extend_schema(tags=["Users"])
 class UserUpdate(APIView):
@@ -83,6 +91,7 @@ class UserUpdate(APIView):
             srz_data.save()
             return Response(srz_data.data, status=status.HTTP_200_OK)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @extend_schema(tags=["Users"])
 class UserDelete(APIView):
@@ -217,6 +226,7 @@ class CityList(APIView):
         srz_data = self.serializer_class(queryset, many=True)
         return Response(srz_data.data)
 
+
 @extend_schema(tags=["ChangePassword"])
 class ChangePasswordView(generics.GenericAPIView):
     """
@@ -236,7 +246,7 @@ class ChangePasswordView(generics.GenericAPIView):
         return Response(serializer.errors, status=400)
 
 
-"""for getting user ID in """
+"""for getting user ID in heather of token"""
 
 
 def get_current_user_from_token(request):

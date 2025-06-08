@@ -8,6 +8,7 @@ from .views import (
     RateCreateView,
     RatingDetailView,
 )
+
 app_name = "interactions"
 
 urlpatterns = [

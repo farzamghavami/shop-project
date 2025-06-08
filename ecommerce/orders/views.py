@@ -102,6 +102,7 @@ class OrderDelete(APIView):
         srz_data = self.serializer_class(object)
         return Response(srz_data.data, status=status.HTTP_204_NO_CONTENT)
 
+
 @extend_schema(tags=["orderitem"])
 class OrderItemList(APIView):
     """
@@ -118,6 +119,7 @@ class OrderItemList(APIView):
         srz_data = self.serializer_class(queryset, many=True)
         return Response(srz_data.data)
 
+
 @extend_schema(tags=["orderitem"])
 class OrderItemDetail(APIView):
     """
@@ -132,6 +134,7 @@ class OrderItemDetail(APIView):
         self.check_object_permissions(request, orderitem)
         serializers = self.serializer_class(orderitem)
         return Response(serializers.data)
+
 
 @extend_schema(tags=["orderitem"])
 class OrderItemUpdate(APIView):
@@ -151,6 +154,7 @@ class OrderItemUpdate(APIView):
             return Response(srz_data.data, status=status.HTTP_200_OK)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @extend_schema(tags=["orderitem"])
 class OrderItemDelete(APIView):
     """
@@ -168,6 +172,7 @@ class OrderItemDelete(APIView):
         srz_data = self.serializer_class(object)
         return Response(srz_data.data, status=status.HTTP_200_OK)
 
+
 @extend_schema(tags=["Delivery"])
 class DeliveryList(APIView):
     """
@@ -182,6 +187,7 @@ class DeliveryList(APIView):
         srz_data = self.serializer_class(queryset, many=True)
         return Response(srz_data.data)
 
+
 @extend_schema(tags=["Delivery"])
 class DeliveryDetail(APIView):
     """
@@ -195,6 +201,7 @@ class DeliveryDetail(APIView):
         queryset = get_object_or_404(Delivery, pk=pk)
         srz_data = self.serializer_class(queryset)
         return Response(srz_data.data)
+
 
 @extend_schema(tags=["Delivery"])
 class DeliveryCreate(APIView):
@@ -211,6 +218,7 @@ class DeliveryCreate(APIView):
             srz_data.save()
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @extend_schema(tags=["Delivery"])
 class DeliveryDelete(APIView):

@@ -1,7 +1,6 @@
 from django.db import models
-from accounts.models import User,Time
+from accounts.models import User, Time
 from catalog.models import Product
-
 
 
 class Rate(Time):

@@ -1,6 +1,6 @@
 import pytest
 
-from ecommerce.accounts.models import Address, City, Country, User
+from accounts.models import Address, City, Country, User
 from tests.conftest import regular_user
 
 

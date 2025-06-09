@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema
 from rest_framework import status
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from .models import User, Address, Country, City
 from .serializers import (
     UserSerializer,
@@ -22,7 +22,36 @@ from rest_framework import filters
 from rest_framework.generics import ListAPIView
 
 
-@extend_schema(tags=["Users"])
+@extend_schema(
+    tags=["Users"],
+
+    parameters=[
+        OpenApiParameter(
+            name="is_active",
+            type=OpenApiTypes.BOOL,
+            location=OpenApiParameter.QUERY,
+            description="filter for active users",
+        ),
+        OpenApiParameter(
+            name="is_staff",
+            type=OpenApiTypes.BOOL,
+            location=OpenApiParameter.QUERY,
+            description="filter for staff users(true or false)",
+        ),
+        OpenApiParameter(
+            name="search",
+            type=OpenApiTypes.STR,
+            location=OpenApiParameter.QUERY,
+            description="search by username, email,date joined"
+        ),
+        OpenApiParameter(
+            name="ordering",
+            type=OpenApiTypes.STR,
+            location=OpenApiParameter.QUERY,
+            description="ordering by username, email and date joined)"
+        ),
+    ]
+)
 class UserList(ListAPIView):
     """
     user list

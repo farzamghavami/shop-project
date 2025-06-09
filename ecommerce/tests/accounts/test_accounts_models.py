@@ -1,5 +1,6 @@
 import pytest
 
+from ecommerce.accounts.models import Address, City, Country, User
 from tests.conftest import regular_user
 
 
@@ -7,7 +8,7 @@ from tests.conftest import regular_user
 class TestUserModel:
     """test user model"""
 
-    def test_user_model(self, user):
+    def test_user_model(self, user: User):
         user = user
         assert user.username == "testuser"
         assert user.email == "test@test.com"
@@ -19,7 +20,7 @@ class TestUserModel:
 class TestAddressModel:
     """test address model"""
 
-    def test_create_address_valid(self, address, regular_user, city):
+    def test_create_address_valid(self, address: Address, regular_user, city: City):
 
         address = address
         assert address.user == regular_user
@@ -32,7 +33,7 @@ class TestAddressModel:
 class TestCityModel:
     """test city model"""
 
-    def test_create_city_valid(self, city, country):
+    def test_create_city_valid(self, city: City, country: Country):
         city = city
         assert city.name == "test"
         assert city.country == country
@@ -42,6 +43,6 @@ class TestCityModel:
 class TestCountryModel:
     """test country model"""
 
-    def test_create_country_valid(self, country):
+    def test_create_country_valid(self, country: Country):
         country = country
         assert country.name == "iran"

@@ -1,18 +1,25 @@
 # Python
 __pycache__/
 *.py[cod]
-
-# Virtual env
 venv/
-.env
-
-# PyCharm
-.idea/
-*.iml
-
-# Django
+env/
 *.sqlite3
-db.sqlite3
+
+# Django stuff:
 *.log
-media/
+*.pot
+*.pyc
+*.mo
 staticfiles/
+media/
+
+# VS Code
+.vscode/
+
+# Docker
+*.env
+*.dockerignore
+docker-compose.override.yml
+
+# macOS
+.DS_Store

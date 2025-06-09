@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  web:
+    build: .
+    command: sh -c "sleep 10 && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DEBUG=True
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1
+      - DATABASE_URL=postgres://farzam:1111@db:5432/ecommerce
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: farzam
+      POSTGRES_PASSWORD: 1111
+      POSTGRES_DB: ecommerce
+    ports:
+    - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+volumes:
+  postgres_data:

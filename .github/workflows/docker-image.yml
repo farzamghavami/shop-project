@@ -1,0 +1,27 @@
+name: Django project test
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Compose
+        run: docker compose -f ecommerce/docker-compose.yml up -d
+
+      - name: Wait for containers
+        run: sleep 10
+
+      - name: Run Django tests
+        run: docker exec web sh -c "pytest ."
+

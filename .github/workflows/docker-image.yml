@@ -19,6 +19,9 @@ jobs:
       - name: Set up Docker Compose
         run: docker compose -f ecommerce/docker-compose.yml up -d
 
+      - name: Wait for containers
+        run: sleep 10
+
       - name: Run Django tests
         run: docker exec web sh -c "pytest ."
 

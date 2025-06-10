@@ -23,4 +23,5 @@ jobs:
         run: sleep 10  # یا healthcheck بهتره، ولی ساده‌ترین حالت اینه
 
       - name: Run Django tests
-        run: docker exec web pytest
+        run: docker exec web sh -c "pytest ."
+

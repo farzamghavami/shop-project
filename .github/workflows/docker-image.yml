@@ -15,6 +15,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: setup Docker compose
-      run: docker compose up -d
+      run: docker-compose up -d
     - name: run test
       run: docker exec -it web pytest .

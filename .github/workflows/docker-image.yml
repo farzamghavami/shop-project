@@ -13,8 +13,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: setup Docker compose
-      run: docker-compose up -d
-    - name: run test
-      run: docker exec -it web pytest .
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Compose
+        run: docker compose up -d
+
+      - name: Wait for containers to be ready
+        run: sleep 10  # یا healthcheck بهتره، ولی ساده‌ترین حالت اینه
+
+      - name: Run Django tests
+        run: docker exec web pytest

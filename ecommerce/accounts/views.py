@@ -51,7 +51,6 @@ from rest_framework.generics import ListAPIView
         ),
     ],
 )
-
 class UserList(ListAPIView):
     """
     user list

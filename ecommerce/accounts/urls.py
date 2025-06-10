@@ -18,10 +18,12 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 app_name = "accounts"
 urlpatterns = [
+    # this urls is for geting user list and doing crud
     path("users", UserList.as_view(), name="users"),
     path("user/<int:pk>", UserDetail.as_view(), name="userdetail"),
     path("user/delete/<int:pk>", UserDelete.as_view(), name="userdelete"),
     path("user/update/<int:pk>", UserUpdate.as_view(), name="userupdate"),
+    # this urls is for getting and create addresses
     path("address/<int:pk>", AddressDetail.as_view(), name="address-detail"),
     path("address", AddressList.as_view(), name="address-list"),
     path("address/create", AddressCreate.as_view()),

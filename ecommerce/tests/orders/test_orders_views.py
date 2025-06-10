@@ -134,9 +134,9 @@ class TestOrderUpdateView:
 
     # test authenticated user cant update another user order
     def test_authenticated_user_cannot_update_order(
-        self, token_another_user_client, order, url,address
+        self, token_another_user_client, order, url, address
     ):
-        response = token_another_user_client.put(url, data={"address":address.id  })
+        response = token_another_user_client.put(url, data={"address": address.id})
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     # test admin can update user order

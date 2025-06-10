@@ -24,7 +24,6 @@ from rest_framework.generics import ListAPIView
 
 @extend_schema(
     tags=["Users"],
-
     parameters=[
         OpenApiParameter(
             name="is_active",
@@ -42,15 +41,15 @@ from rest_framework.generics import ListAPIView
             name="search",
             type=OpenApiTypes.STR,
             location=OpenApiParameter.QUERY,
-            description="search by username, email,date joined"
+            description="search by username, email,date joined",
         ),
         OpenApiParameter(
             name="ordering",
             type=OpenApiTypes.STR,
             location=OpenApiParameter.QUERY,
-            description="ordering by username, email and date joined)"
+            description="ordering by username, email and date joined)",
         ),
-    ]
+    ],
 )
 class UserList(ListAPIView):
     """

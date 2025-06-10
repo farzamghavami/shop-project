@@ -88,8 +88,8 @@ WSGI_APPLICATION = "ecommerce.wsgi.application"
 
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default='postgres://farzam:1111@db:5432/ecommerce'
+    "default": dj_database_url.config(
+        default="postgres://farzam:1111@db:5432/ecommerce"
     )
 }
 

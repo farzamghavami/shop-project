@@ -13,9 +13,9 @@ env/
 staticfiles/
 media/
 
-# VS Code
+# VS Code & pycharm
 .vscode/
-
+.idea
 # Docker
 *.env
 *.dockerignore

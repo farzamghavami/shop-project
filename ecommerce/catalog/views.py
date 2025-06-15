@@ -140,6 +140,7 @@ class ShopCreate(APIView):
     serializer_class = ShopSerializer
 
     def post(self, request):
+        #using token from user to create shop(you can know who create)
         current_user = get_current_user_from_token(request)
         self.check_object_permissions(request, request)
         srz_data = self.serializer_class(data=request.data)
@@ -301,16 +302,16 @@ class WishlistCreate(APIView):
         if queryset.is_valid():
             product_id = queryset.validated_data.get("product").id
 
-            # بررسی وجود قبلی
+            # search for being exists
             if Wishlist.objects.filter(
                 user=current_user, product_id=product_id
             ).exists():
                 return Response(
-                    {"detail": "این محصول قبلاً به علاقه‌مندی‌ها اضافه شده است."},
+                    {"detail": "this product is in the wishlist"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            # ذخیره‌سازی در صورت عدم وجود
+            # save if not saved before
             queryset.save(user=current_user)
             return Response(queryset.data, status=status.HTTP_201_CREATED)
 

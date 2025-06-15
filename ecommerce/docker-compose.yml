@@ -1,6 +1,12 @@
 version: '3.9'
 
 services:
+  redis:
+    container_name: redis
+    image: redis
+    command: redis-server --save 60 1 --loglevel warning
+    # 👇 پورت حذف شد چون فقط از داخل استفاده می‌شه
+
   web:
     build: .
     command: sh -c "sleep 10 && python manage.py runserver 0.0.0.0:8000"
@@ -10,11 +16,21 @@ services:
     ports:
       - "8000:8000"
     depends_on:
+      - redis
       - db
     environment:
       - DEBUG=True
       - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1
       - DATABASE_URL=postgres://farzam:1111@db:5432/ecommerce
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+  worker :
+    build: .
+    command: celery -A ecommerce worker --loglevel=info
+    depends_on:
+      - redis
+      - web
 
   db:
     image: postgres
@@ -23,9 +39,8 @@ services:
       POSTGRES_USER: farzam
       POSTGRES_PASSWORD: 1111
       POSTGRES_DB: ecommerce
-
     ports:
-    - "5432:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
 

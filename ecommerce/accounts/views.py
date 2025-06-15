@@ -22,6 +22,8 @@ from rest_framework import filters
 from rest_framework.generics import ListAPIView
 
 
+
+#this is for adding description for fields like search, ordering and pagination
 @extend_schema(
     tags=["Users"],
     parameters=[
@@ -81,6 +83,7 @@ class UserDetail(APIView):
 
     def get(self, request, pk):
         user = get_object_or_404(User, pk=pk)
+        # this chek permission is for apiview to chek the permission
         self.check_object_permissions(request, user)
         srz_data = self.serializer_class(user)
         return Response(srz_data.data, status=status.HTTP_200_OK)
@@ -133,6 +136,7 @@ class UserDelete(APIView):
     def delete(self, request, pk):
         user = get_object_or_404(User, pk=pk)
         self.check_object_permissions(request, user)
+        #use this for soft delete
         user.is_active = False
         user.save()
         serializer = self.serializer_class(user)
@@ -191,7 +195,7 @@ class AddressCreate(APIView):
 @extend_schema(tags=["Addresses"])
 class AddressUpdate(APIView):
     """
-    update a address
+    update address
     """
 
     permission_classes = [IsOwnerOrAdmin]
@@ -278,31 +282,31 @@ class ChangePasswordView(generics.GenericAPIView):
 
 
 def get_current_user_from_token(request):
-    # استخراج توکن از header
+    #get token from header
     auth_header = request.headers.get("Authorization")
 
     if not auth_header or not auth_header.startswith("Bearer "):
-        raise AuthenticationFailed("توکن یافت نشد یا فرمت اشتباه است.")
+        raise AuthenticationFailed("token is invalid or format is wrong")
 
     token = auth_header.split(" ")[1]
 
     try:
-        # دیکود کردن توکن با secret key
+        # decoding codes with secret_key
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("user_id")
 
         if user_id is None:
-            raise AuthenticationFailed("توکن معتبر نیست.")
+            raise AuthenticationFailed("token is not valid.")
 
         try:
             user = User.objects.get(id=user_id)
             return user
 
         except User.DoesNotExist:
-            raise AuthenticationFailed("کاربر یافت نشد.")
+            raise AuthenticationFailed("user is not exist.")
 
     except jwt.ExpiredSignatureError:
-        raise AuthenticationFailed("توکن منقضی شده.")
+        raise AuthenticationFailed("token is expired.")
 
     except jwt.InvalidTokenError:
-        raise AuthenticationFailed("توکن نامعتبر است.")
+        raise AuthenticationFailed("token is invalid.")

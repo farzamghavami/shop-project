@@ -15,7 +15,7 @@ media/
 
 # VS Code & pycharm
 .vscode/
-.idea
+.idea/
 # Docker
 *.env
 *.dockerignore

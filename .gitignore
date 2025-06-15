@@ -21,5 +21,6 @@ media/
 *.dockerignore
 docker-compose.override.yml
 
+
 # macOS
 .DS_Store

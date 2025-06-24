@@ -5,12 +5,13 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from accounts.views import get_current_user_from_token
-from .models import Order, OrderItem, Delivery
+from .models import Order, OrderItem, Delivery,Coupon
 from .serializers import (
     OrderSerializer,
     OrderItem,
     DeliverySerializer,
     OrderItemSerializer,
+    ApplyCouponSerializer,
 )
 from core.permissions import IsOwnerOrAdmin, IsSellerOrAdmin
 from drf_spectacular.utils import extend_schema
@@ -235,3 +236,33 @@ class DeliveryDelete(APIView):
         object.save()
         srz_data = self.serializer_class(object)
         return Response(srz_data.data, status=status.HTTP_200_OK)
+
+
+@extend_schema(tags=["order"])
+class ApplyCouponView(APIView):
+    serializer_class = ApplyCouponSerializer
+    permission_classes = [IsAuthenticated]
+    def post(self, request, order_id):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            code = serializer.validated_data['code']
+            order = get_object_or_404(Order, id=order_id, user=request.user)
+            coupon = Coupon.objects.get(code=code)
+
+            if not coupon.is_valid():
+                return Response({"error": "کد تخفیف معتبر نیست"}, status=400)
+
+            order.coupon = coupon
+            order.calculate_total_price()  # محاسبه قیمت نهایی با تخفیف
+            order.save()
+
+            coupon.usage_count += 1
+            coupon.save()
+
+            return Response({
+                "message": "کد تخفیف با موفقیت اعمال شد",
+                "discount_amount": order.discount_amount,
+                "total_price": order.total_price
+            }, status=200)
+
+        return Response(serializer.errors, status=400)

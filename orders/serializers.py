@@ -1,7 +1,24 @@
 from rest_framework import serializers
 
 from catalog.models import Product
-from .models import Order, OrderItem, Delivery
+from .models import Order, OrderItem, Delivery,Coupon
+
+
+class ApplyCouponSerializer(serializers.Serializer):
+    code = serializers.CharField()
+
+    def validate_code(self, value):
+        try:
+            coupon = Coupon.objects.get(code=value)
+        except Coupon.DoesNotExist:
+            raise serializers.ValidationError("کد تخفیف نامعتبر است")
+
+        if not coupon.is_valid():
+            raise serializers.ValidationError("کد تخفیف منقضی شده یا غیرفعال است")
+
+        return value
+
+
 
 
 class OrderItemSerializer(serializers.ModelSerializer):

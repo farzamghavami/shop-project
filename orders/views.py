@@ -239,9 +239,10 @@ class DeliveryDelete(APIView):
 
 
 @extend_schema(tags=["order"])
-class ApplyCouponView(APIView):
+class CouponView(APIView):
     serializer_class = ApplyCouponSerializer
     permission_classes = [IsAuthenticated]
+
     def post(self, request, order_id):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():

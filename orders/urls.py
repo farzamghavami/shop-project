@@ -15,7 +15,7 @@ from .views import (
     DeliveryDelete,
     DeliveryList,
     DeliveryDetail,
-    ApplyCouponView,
+    CouponView,
 )
 
 app_name = "orders"
@@ -28,7 +28,7 @@ urlpatterns = [
     path("order/create", OrderCreate.as_view(), name="order-create"),
     path("order/update/<int:pk>", OrderUpdate.as_view(), name="order-update"),
     path("order/delete/<int:pk>", OrderDelete.as_view(), name="order-delete"),
-    path('orders/<int:order_id>/apply-coupon/', ApplyCouponView.as_view(), name='apply-coupon'),
+    path('orders/copen/<int:order_id>/', CouponView.as_view(), name='apply-coupon'),
 
     #this url is for orderitem
     path("orderitem", OrderItemList.as_view(), name="orderitem-list"),

@@ -18,7 +18,7 @@ class Coupon(models.Model):
 
     def is_valid(self):
         now = timezone.now()
-        return self.active and self.valid_from <= now <= self.valid_to and self.usage_count < self.max_usage
+        return self.active and self.valid_from <= now <= self.valid_to and self.usage_count <= self.max_usage
 
     def __str__(self):
         return self.code

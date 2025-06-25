@@ -15,10 +15,21 @@ class Coupon(models.Model):
     active = models.BooleanField(default=True)
     max_usage = models.PositiveIntegerField(default=1)
     usage_count = models.PositiveIntegerField(default=0)
+    min_order_amount = models.DecimalField(
+        max_digits=12, decimal_places=2, default=0,
+        help_text="minimum order amount per coupon"
+    )
 
-    def is_valid(self):
+    def is_valid(self,order_total: Decimal = None):
         now = timezone.now()
-        return self.active and self.valid_from <= now <= self.valid_to and self.usage_count <= self.max_usage
+        if not self.active and self.valid_from <= now <= self.valid_to and self.usage_count <= self.max_usage:
+            return False
+
+        if order_total is not None and order_total < self.min_order_amount:
+            return False
+
+        return True
+
 
     def __str__(self):
         return self.code
@@ -44,7 +55,7 @@ class Order(Time):
         ])
 
         # محاسبه تخفیف به‌صورت Decimal امن
-        if self.coupon and self.coupon.is_valid():
+        if self.coupon and self.coupon.is_valid(order_total=items_total):
             discount_rate = Decimal(self.coupon.discount_percent) / Decimal('100')
             self.discount_amount = items_total * discount_rate
         else:

@@ -54,6 +54,7 @@ class Order(Time):
             item.row_price * item.count for item in self.items.all()
         ])
 
+
         # محاسبه تخفیف به‌صورت Decimal امن
         if self.coupon and self.coupon.is_valid(order_total=items_total):
             discount_rate = Decimal(self.coupon.discount_percent) / Decimal('100')
